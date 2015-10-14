@@ -235,11 +235,12 @@ def process(infile,outfile):
 def main(argv=None):
     shpfile=None
     outputfile=None
+    FileType="Lake"
     if argv is None:
         argv=sys.argv;
     try:
         try:
-            opts,args = getopt.getopt(argv[1:], 'hf:o:', ["help","file=","output="])
+            opts,args = getopt.getopt(argv[1:], 'hlsf:o:', ["help","file=","output=","lakecounty","sumtercounty"])
         except getopt.error as msg:
             raise Usage(msg)
         #more code
@@ -255,11 +256,19 @@ def main(argv=None):
             shpfile=arg
         elif opt in ("-o","--output"):
             outputfile=arg
+        elif opt in ("-l","--lakecounty"):
+            FileType="Lake"
+        elif opt in ("-s","--sumtercounty"):
+            FileType="Sumter"
         else:
             usage()
             return 2
         #process the information
-    return process(shpfile,outputfile)
+    if FileType=="Lake":
+        return process(shpfile,outputfile)
+    elif FileType=="Sumter":
+        return 0
+    
 
 if __name__ == "__main__":
     sys.exit(main())
