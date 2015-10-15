@@ -56,7 +56,8 @@ def street_prefix(str_prefix):
         "Way":"Way",
         "CT":"Court",
         "CIR":"Circle",
-        "ST":"Street", 
+        "ST":"Street",
+        "PATH":"Path,
     }
     return switcher.get(str_prefix,"UNDEFINED")
 
