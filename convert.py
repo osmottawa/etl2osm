@@ -43,21 +43,7 @@ def street_prefix(str_prefix):
         "NE":"North East",
         "NW":"North West",
         "SE":"South East",
-        "SW":"South West",
-        "AVE":"Avenue",
-        "BLVD":"Boulevard",
-        "DR":"Drive",
-        "LN":"Lane",
-        "LOOP":"Loop",
-        "PL":"Place",
-        "RD":"Road",
-        "TRL":"Trail",
-        "TER":"Terrace",
-        "Way":"Way",
-        "CT":"Court",
-        "CIR":"Circle",
-        "ST":"Street",
-        "PATH":"Path,
+        "SW":"South West"        
     }
     return switcher.get(str_prefix,"UNDEFINED")
 
@@ -77,7 +63,8 @@ def street_suffix(str_suffix):
         "Way":"Way",
         "CT":"Court",
         "CIR":"Circle",
-        "ST":"Street", 
+        "ST":"Street",
+        "PATH":"Path",
     }
     return switcher.get(str_suffix,"UNDEFINED")
 
