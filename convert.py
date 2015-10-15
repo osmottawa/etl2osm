@@ -20,14 +20,14 @@ def usage():
     print(msg)
 
 def titlecase_except(s, exceptions):
-    word_list = re.split(' ', s)       #re.split behaves as expected
-    final =[]
+    word_list = re.split(' ', s)
+    final = []
     for word in word_list:
         if word in exceptions:
-            final.append(copy.copy(word))
+            final.append(word)
         else:
-            final.append(copy.copy(word).capitalize())
-    return " ".join(final)
+            final.append(word.capitalize())
+    return ' '.join(final)
 
 def street_prefix(str_prefix):
     if (str_prefix=="" or str_prefix.strip()==""):
