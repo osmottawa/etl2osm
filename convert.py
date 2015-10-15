@@ -7,6 +7,7 @@ import getopt
 import shapefile
 import copy
 import re
+import json
 
 class Usage(Exception):
     def __init__(self,msg):
@@ -16,7 +17,8 @@ def usage():
     msg ="""usage: convert [-h (--help)] [-f (--file)] [-o (--output)]
     required arguments:
     -f, --file\t\tPath of shapefile to process
-    -o, --output\t\tPath of output file"""
+    -o, --output\t\tPath of output file
+    -c, --config\t\tConfig file for columns"""
     print(msg)
 
 def titlecase_except(s, exceptions):
@@ -27,7 +29,14 @@ def titlecase_except(s, exceptions):
             final.append(word)
         else:
             final.append(word.capitalize())
-    return ' '.join(final)
+    return " ".join(final)
+
+def process_basestreet(street):
+    if re.match("^C-",street):
+        street = "CR " + street[2:]
+    elif re.match("^I\d",street):
+        street="I " + street[1:]
+    return street
 
 def street_prefix(str_prefix):
     if (str_prefix=="" or str_prefix.strip()==""):
@@ -87,67 +96,94 @@ def unit_num(unit):
 def write_closer(file):
     file.write("</osm>")
 
-def write_header(file,minlat,minlon,maxlat,maxlon):
+def write_header(file,bbox):
     file.write("<?xml version='1.0' encoding='UTF-8'?>\n<osm version='0.6' upload='true' generator='JOSM'>\n")
-    file.write("  <bounds minlat='"+ str(minlat) +"' minlon='"+ str(minlon) +"' maxlat='"+ str(maxlat) +"' maxlon='"+ str(maxlon) +"' origin='Sumter, Lake County' />\n")
+    file.write("  <bounds minlat='"+ str(bbox[1]) +"' minlon='"+ str(bbox[0]) +"' maxlat='"+ str(bbox[3]) +"' maxlon='"+ str(bbox[2]) +"' origin='Sumter, Lake County' />\n")
 
 def write_node(file,cntr,attr_list):
-    #compile street
-    street =""
-    #if len(attr_list[1])>1:
-    #    street+=attr_list[1]+" " #direction of street not needed in name
-    if len(attr_list[2])>1:
-        street+=attr_list[2]+" "
-    if len(attr_list[3])>1:
-        street+=attr_list[3]+" "
-    if len(attr_list[4])>1:
-        street+=attr_list[4]
-    #words we don't want capitalized
-    cap_except =["'s","the","in","a","CR","US","SR"]
-    street = titlecase_except(street,cap_except)
-    
     #start the output tag
     msg = "  <node id='-" + str(cntr) + "' action='modify' visible='true' lat='"+str(attr_list[6])+"' lon='"+str(attr_list[7])+"'>\n"
-    msg +="    <tag k='addr:housenumber' v='"+str(attr_list[0])+"' />\n"
-    msg +="    <tag k='addr:street' v='"+street.strip()+"' />\n"
+    
+    #compile street
+    street =""    
+    if not (attr_list[2].strip()=="" and attr_list[3].strip()=="" and attr_list[4].strip()==""):
+        #if len(attr_list[1])>1:
+        #    street+=attr_list[1]+" " #direction of street not needed in name
+        if len(attr_list[2])>1:
+            street+=attr_list[2]+" "
+        if len(attr_list[3])>1:
+            street+=attr_list[3]+" "
+        if len(attr_list[4])>1:
+            street+=attr_list[4]
+        #words we don't want capitalized
+        cap_except =["'s","the","in","a","CR","US","SR"]
+        street = titlecase_except(street,cap_except)
+        msg +="    <tag k='addr:street' v='"+street.strip()+"' />\n"
+    
+    if not (attr_list[0]==None):
+        msg +="    <tag k='addr:housenumber' v='"+ "{0:g}".format(attr_list[0]) +"' />\n"
+    
     msg +="    <tag k='source:addr' v='Sumter, Lake County' />\n"
-    msg +="    <tag k='addr:postcode' v='"+str(attr_list[5])+"' />\n"
+    
+    if not(attr_list[5]==None):
+        msg +="    <tag k='addr:postcode' v='"+ "{0:g}".format(attr_list[5])+"' />\n"
+    
     if not(attr_list[8] ==""):
         msg+="    <tag k='addr:unit' v='"+str(attr_list[8])+"' />\n"
         msg+="    <tag k='ref' v='" + str(attr_list[8])+"' />\n"
     msg +="  </node>\n"
     file.write(msg)
 
-def process(infile,outfile):
+def process(infile,outfile,jConfig):
+    #
     sf = shapefile.Reader(infile)
     fields=list(sf.fields)
     fields.pop(0) #remove the deletion flag from field list
-    cntr=0   
-    #remove extra garbage from field list
+    cntr=0
+    
+    #get rid of extra garbage in field list
     new_list=[]
     for item in fields:
-        new_list.append(item[0])
-        
+        new_list.append(item[0])  
     fields=new_list
-    new_list=None    
-    rec = None
+    new_list=None 
     
     f= open(outfile,'w')
-    write_header(f,sf.bbox[1],sf.bbox[0],sf.bbox[3],sf.bbox[2])
+    write_header(f,sf.bbox)
     try:
-        mega=[]
         for shapeRec in sf.iterShapeRecords():
             #check that the shape is a point and not a polygon
             attr_list=[]
-            address=copy.copy(shapeRec.record[fields.index("AddressNum")])
-            predir=copy.copy(shapeRec.record[fields.index("PrefixDire")])
-            pretype=copy.copy(shapeRec.record[fields.index("PrefixType")])
-            basestreet=copy.copy(shapeRec.record[fields.index("BaseStreet")])
-            suffix=copy.copy(shapeRec.record[fields.index("SuffixType")])
-            zipcode=copy.copy(shapeRec.record[fields.index("ZipCode")])
-            unitnum= copy.copy(shapeRec.record[fields.index("UnitNumber")])
+            pbasestreet=False
+            address=""
+            if "Number" in jConfig:
+                address=copy.copy(shapeRec.record[fields.index(jConfig["Number"])])
+            predir=""
+            if "PrefixDir" in jConfig["StreetName"]:
+                predir=copy.copy(shapeRec.record[fields.index(jConfig["StreetName"]["PrefixDir"])])
+            pretype=""
+            if "Prefix" in jConfig["StreetName"]:
+                pretype=copy.copy(shapeRec.record[fields.index(jConfig["StreetName"]["Prefix"])])
+            basestreet=""
+            if "Name" in jConfig["StreetName"]:
+                basestreet=copy.copy(shapeRec.record[fields.index(jConfig["StreetName"]["Name"])])
+            suffix=""
+            if "Suffix" in jConfig["StreetName"]:
+                suffix=copy.copy(shapeRec.record[fields.index(jConfig["StreetName"]["Suffix"])])
+            zipcode=""
+            if "Postal" in jConfig:
+                zipcode=copy.copy(shapeRec.record[fields.index(jConfig["Postal"])])
+            unitnum=""
+            if "Unit" in jConfig:
+                unitnum= copy.copy(shapeRec.record[fields.index(jConfig["Unit"])])
             lat=copy.copy(shapeRec.shape.points[0][1])
             long=copy.copy(shapeRec.shape.points[0][0])
+            
+            #Street Name might be all in one string
+            if not("PrefixDir" in jConfig["StreetName"] or "Prefix" in jConfig["StreetName"]):
+                pbasestreet=True
+            
+            
             #Address- 0
             attr_list.append(address)
             #Street Name - 1 2 3 4
@@ -168,11 +204,12 @@ def process(infile,outfile):
             
             try:
                 if isinstance(basestreet,bytes):
-                    attr_list.append(basestreet.decode("utf-8"))
-                else:
-                    attr_list.append(basestreet)
+                    basestreet=basestreet.decode("utf-8")
             except:
-                attr_list.append("")
+                basestreet=""
+            if pbasestreet:
+                basestreet=process_basestreet(basestreet)
+            attr_list.append(basestreet)
             
             try:
                 if isinstance(suffix,bytes):
@@ -223,12 +260,13 @@ def process(infile,outfile):
 def main(argv=None):
     shpfile=None
     outputfile=None
-    FileType="Lake"
+    configfile=None
+    
     if argv is None:
         argv=sys.argv;
     try:
         try:
-            opts,args = getopt.getopt(argv[1:], 'hlsf:o:', ["help","file=","output=","lakecounty","sumtercounty"])
+            opts,args = getopt.getopt(argv[1:], 'hc:f:o:', ["help","file=","output=","config"])
         except getopt.error as msg:
             raise Usage(msg)
         #more code
@@ -244,19 +282,23 @@ def main(argv=None):
             shpfile=arg
         elif opt in ("-o","--output"):
             outputfile=arg
-        elif opt in ("-l","--lakecounty"):
-            FileType="Lake"
-        elif opt in ("-s","--sumtercounty"):
-            FileType="Sumter"
+        elif opt in ("-c","--config"):
+            configfile=arg
         else:
             usage()
             return 2
-        #process the information
-    if FileType=="Lake":
-        return process(shpfile,outputfile)
-    elif FileType=="Sumter":
-        return 0
+
+    #get config
+    data = open(configfile).read();
+    if isinstance(data,bytes):
+        data=data.decode("utf-8") #don't want byte strings
+    jConfig=json.loads(data)
     
+    #process the information    
+    if jConfig["Type"]=="Address":
+        return process(shpfile,outputfile,jConfig)
+    elif jConfig["Type"]=="Roads":
+        return 0     
 
 if __name__ == "__main__":
     sys.exit(main())

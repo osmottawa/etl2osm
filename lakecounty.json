@@ -1,0 +1,12 @@
+{
+	"Type":"Address",
+	"Number": "AddressNum",
+	"StreetName":{
+		"PrefixDir":"PrefixDire",
+		"Prefix":"PrefixType",
+		"Name":"BaseStreet",
+		"Suffix":"SuffixType"
+	},
+	"Postal": "ZipCode",
+	"Unit": "UnitNumber"
+}
