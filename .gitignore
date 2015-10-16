@@ -1,5 +1,4 @@
-
-geocoder/__pycache__/
+__pycache__/
 .coverage
 MANIFEST
 coverage.xml
@@ -19,10 +18,7 @@ geocoder.egg-info/
 *.pyo
 *.log
 env/
-
 .workon
-
 t.py
-
 t2.py
 dist
