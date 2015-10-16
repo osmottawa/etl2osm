@@ -74,6 +74,7 @@ def street_suffix(str_suffix):
         "CIR":"Circle",
         "ST":"Street",
         "PATH":"Path",
+        "DR S":"Drive South"
     }
     return switcher.get(str_suffix,"UNDEFINED")
 
