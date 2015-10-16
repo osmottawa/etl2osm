@@ -2,6 +2,7 @@
 # coding: utf8
 
 import re
+import logging
 import shapefile
 from six import string_types, binary_type
 
@@ -85,9 +86,10 @@ def process(infile, outfile, config):
     # Loop inside each feature within the Shapefile
     for feature in shp.iterShapeRecords():
         attributes = dict((fields[k], clean_feature(v)) for k, v in enumerate(feature.record))
-        print(attributes)
+        logging.info(attributes)
 
 if __name__ == '__main__':
+    logging.basicConfig(filename='shapefile.log', level=logging.DEBUG)
     root = '/home/denis/Downloads/TheVillages/'
     infile = root + 'Sumter_Roads_WGS84.shp'
     outfile = root + 'Sumter_Roads_WGS84-EDIT.shp'
