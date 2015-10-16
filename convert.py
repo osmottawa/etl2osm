@@ -49,10 +49,10 @@ def street_prefix(str_prefix):
         "S":"South",
         "E":"East",
         "W":"West",
-        "NE":"North East",
-        "NW":"North West",
-        "SE":"South East",
-        "SW":"South West"        
+        "NE":"Northeast",
+        "NW":"Northwest",
+        "SE":"Southeast",
+        "SW":"Southwest"        
     }
     return switcher.get(str_prefix,"UNDEFINED")
 
@@ -136,48 +136,43 @@ def write_node(file,cntr,attr_list):
 
 def process(infile,outfile,jConfig):
     #
-    sf = shapefile.Reader(infile)
-    fields=list(sf.fields)
-    fields.pop(0) #remove the deletion flag from field list
-    cntr=0
-    
+    shp = shapefile.Reader(infile)
     #get rid of extra garbage in field list
-    new_list=[]
-    for item in fields:
-        new_list.append(item[0])  
-    fields=new_list
-    new_list=None 
-    
+    #remove the deletion flag from field list
+    fields = list((i[0]) for i in shp.fields[1:])
+
+    cntr=0
+        
     f= open(outfile,'w')
-    write_header(f,sf.bbox)
+    write_header(f,shp.bbox)
     try:
-        for shapeRec in sf.iterShapeRecords():
+        for feature in shp.iterShapeRecords():
             #check that the shape is a point and not a polygon
             attr_list=[]
             pbasestreet=False
             address=""
             if "Number" in jConfig:
-                address=copy.copy(shapeRec.record[fields.index(jConfig["Number"])])
+                address=copy.copy(feature.record[fields.index(jConfig["Number"])])
             predir=""
             if "PrefixDir" in jConfig["StreetName"]:
-                predir=copy.copy(shapeRec.record[fields.index(jConfig["StreetName"]["PrefixDir"])])
+                predir=copy.copy(feature.record[fields.index(jConfig["StreetName"]["PrefixDir"])])
             pretype=""
             if "Prefix" in jConfig["StreetName"]:
-                pretype=copy.copy(shapeRec.record[fields.index(jConfig["StreetName"]["Prefix"])])
+                pretype=copy.copy(feature.record[fields.index(jConfig["StreetName"]["Prefix"])])
             basestreet=""
             if "Name" in jConfig["StreetName"]:
-                basestreet=copy.copy(shapeRec.record[fields.index(jConfig["StreetName"]["Name"])])
+                basestreet=copy.copy(feature.record[fields.index(jConfig["StreetName"]["Name"])])
             suffix=""
             if "Suffix" in jConfig["StreetName"]:
-                suffix=copy.copy(shapeRec.record[fields.index(jConfig["StreetName"]["Suffix"])])
+                suffix=copy.copy(feature.record[fields.index(jConfig["StreetName"]["Suffix"])])
             zipcode=""
             if "Postal" in jConfig:
-                zipcode=copy.copy(shapeRec.record[fields.index(jConfig["Postal"])])
+                zipcode=copy.copy(feature.record[fields.index(jConfig["Postal"])])
             unitnum=""
             if "Unit" in jConfig:
-                unitnum= copy.copy(shapeRec.record[fields.index(jConfig["Unit"])])
-            lat=copy.copy(shapeRec.shape.points[0][1])
-            long=copy.copy(shapeRec.shape.points[0][0])
+                unitnum= copy.copy(feature.record[fields.index(jConfig["Unit"])])
+            lat=copy.copy(feature.shape.points[0][1])
+            long=copy.copy(feature.shape.points[0][0])
             
             #Street Name might be all in one string
             if not("PrefixDir" in jConfig["StreetName"] or "Prefix" in jConfig["StreetName"]):
@@ -249,7 +244,7 @@ def process(infile,outfile,jConfig):
             write_node(f,cntr,attr_list)           
         
         write_closer(f)
-        sf=None
+        shp=None
         f.close()    
     except:
         print (sys.exc_info()[0])
@@ -302,6 +297,3 @@ def main(argv=None):
 
 if __name__ == "__main__":
     sys.exit(main())
-        
-    
-        

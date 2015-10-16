@@ -2,6 +2,7 @@
 	"Type":"Address",
 	"Number": "NUMBER_",
 	"StreetName":{
+		"Prefix":"PREDIR"
 		"Name":"ST_NAME",
 		"Suffix":"STSUFFIX"
 	},
