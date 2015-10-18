@@ -54,34 +54,45 @@ Doing the entire process in a single line
 etl2osm.process(infile, outfile=outfile, config=config)
 ```
 
-Getting Started
----------------
+To see what's happening, you can turn on the `Debug` mode.
 
-Converting your KML file into a ESRI compatible Shapefile.
-
-```bash
-$ etl2osm filepath/example.kml --format shp
+```python
+etl2osm.process(infile, debug=True)
 ```
 
-Saving output as a specific name `newfile` into both Shapefile & GeoJSON format.
+CLI API
+-------
+
+Reading the a file, the standard output will be in a GeoJSON format.
 
 ```bash
-$ etl2osm example.kml --out newfile --format shp
-$ etl2osm example.kml --out newfile --format geojson
+$ etl2osm infile.shp --outfile outfile.osm --config config.json
 ```
 
-Convert multiple files using the `*` in your input file path.
+Read & Transform the file using the config file.
+
+```bash
+$ etl2osm infile.shp --config config.json
+```
+
+Entire process of `Extract Transform Load` to an OpenStreetMap format.
+
+```bash
+$ etl2osm infile.shp --outfile outfile.osm --config config.json
+```
+
+Doing this process on multiple files using the `*` in your input file path.
 
 ```bash
 # Finds all the files starting with 2015 and ends with .kml
 
-$ etl2osm folder/2015*.kml --format shp
+$ etl2osm folder/2015*.shp --config config.json --format osm
 ```
 
 To see what's happening, you can turn on the `Debug` mode.
 
 ```bash
-$ etl2osm example.shp --debug
+$ etl2osm infile.shp --debug
 ```
 
 
