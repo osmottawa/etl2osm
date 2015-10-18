@@ -10,20 +10,20 @@
         "county": "Lake"
     },
     "attribution": "Lake County",
-    "data": "ftp://ftp.co.lake.fl.us/GIS/GisDownloads/Shapefiles/AddressPoints.zip",
+    "data": "ftp://ftp.co.lake.fl.us/GIS/GisDownloads/Shapefiles/Streets.zip",
     "website": "http://www.lakecountyfl.gov/departments/information_technology/geographic_information_services/datadownloads.aspx",
     "license": "Public Domain",
     "type": "ftp",
     "compression": "zip",
     "conform": {
-        "housenumber": "addressnum",
         "street": {
         	"direction": "PrefixDire",
             "prefix": "PrefixType",
             "basename": "BaseStreet",
             "suffix": "SuffixType"
         },
-        "unit": "UnitNumber",
+        "lanes": "NumberOfLa",
         "type": "shapefile",
+        "oneway": "Oneway",
     }
 }

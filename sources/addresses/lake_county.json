@@ -16,7 +16,7 @@
     "type": "ftp",
     "compression": "zip",
     "conform": {
-        "number": "addressnum",
+        "housenumber": "addressnum",
         "street": {
             "direction": "PrefixDire",
             "prefix": "PrefixType",
