@@ -57,8 +57,6 @@ class Extract(object):
                 self.crs_wkt = source.meta['crs_wkt']
                 for feature in source:
                     self.geojson.append(feature)
-                    print(feature['geometry']['coordinates'])
-                    exit()
 
     def read_kml(self, infile, **kwargs):
         """Reads a KML and gives the results in GeoJSON format"""
