@@ -12,14 +12,9 @@ from etl2osm.api import process
 @click.argument('infiles', nargs=-1, help='Path of Shapefile to process')
 @click.option('--config', '-c', help='Config file for columns')
 @click.option('--output', '-o', help='Output file path')
-@click.option('--format', '-f', default='shp', help='Data output format [shp, geojson, osm]')
+@click.option('--format', '-f', default='osm', help='Data output format [shp, geojson, osm]')
 @click.option('--debug', is_flag=True, help='Shows all the logging messages')
 def cli(infiles, debug, **kwargs):
-
-    # Enable Debugging
-    if debug:
-        logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
-
     # Process Input files
     if infiles:
         # Using the search all function

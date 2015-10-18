@@ -27,13 +27,31 @@ $ pip install etl2osm
 
 ### GitHub Install
 
-
 Install the latest version directly from Github.
 
 ```bash
 $ git clone https://github.com/osmottawa/etl2osm/
 $ cd etl2osm
 $ python setup.py install
+```
+
+Python API
+----------
+
+Step by Step doing a typical `Extract Transform Load` processing.
+
+```python
+import etl2osm
+
+data = etl2osm.read(infile)
+data.transform(config)
+data.save(outfile)
+```
+
+Doing the entire process in a single line
+
+```python
+etl2osm.process(infile, outfile=outfile, config=config)
 ```
 
 Getting Started

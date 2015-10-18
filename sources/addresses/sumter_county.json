@@ -24,6 +24,6 @@
         },
         "postcode": "ZIP_CODES",
         "unit": "UNIT",
-        "type": "shapefile",
+        "type": "shapefile"
     }
 }

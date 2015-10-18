@@ -24,6 +24,6 @@
         "maxspeed": {
             "mph": "Speed_Limi"
         },
-        "type": "shapefile",
+        "type": "shapefile"
     }
 }
