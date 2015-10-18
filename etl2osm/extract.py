@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 import logging
 import os
 import fiona
@@ -43,6 +44,9 @@ class Extract(object):
 
     def __repr__(self):
         return '<Data [%i]>' % len(self)
+
+    def __getitem__(self, lookup):
+        return self.geojson[lookup]
 
     def read_shp(self, infile, **kwargs):
         """Reads a Shapefile and gives the results in GeoJSON format"""
@@ -88,7 +92,6 @@ class Extract(object):
 
 if __name__ == '__main__':
     # logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
-    infile = 'C:\Users\Claude\Downloads/test.shp'
+    infile = 'C:\Users\Claude\Downloads/Address2015.shp'
     data = Extract(infile)
-    data2 = Extract(infile)
-    print(data + data2 + data2)
+    print(data)

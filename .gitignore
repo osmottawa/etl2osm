@@ -11,7 +11,7 @@ violations.pyflakes.txt
 cover/
 build/
 docs/_build
-geocoder.egg-info/
+etl2osm.egg-info/
 *.pyc
 *.swp
 *.egg

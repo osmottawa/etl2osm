@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
-from etl2osm.elt import Extract
-from etl2osm.transform import Transform
-from etl2osm.load import Load
 
 
 def process(infile, **kwargs):
@@ -14,10 +11,7 @@ def process(infile, **kwargs):
     :param ``config``: Config file for column transformation.
     :param ``format``: Data output format [shp, geojson, osm].
     """
-
-    data = Extract(infile, **kwargs)
-    data = Transform(data, **kwargs)
-    return Load(data, **kwargs)
+    pass
 
 
 def extract(infile, **kwargs):
@@ -25,8 +19,8 @@ def extract(infile, **kwargs):
 
     :argument ``infile``: Input file path to read.
     """
+    pass
 
-    return Extract(infile, **kwargs)
 
 def transform(data, **kwargs):
     """ Transform data columns.
@@ -34,8 +28,8 @@ def transform(data, **kwargs):
     :argument ``data``: Data that has already been extracted.
     :param ``config``: Config file for column transformation.
     """
+    pass
 
-    return Transform(data, **kwargs)
 
 def load(data, **kwargs):
     """ Loads data into a specific format.
@@ -44,5 +38,4 @@ def load(data, **kwargs):
     :param ``outfile``: Output file path to save.
     :param ``format``: Data output format [shp, geojson, osm].
     """
-
-    return Load(data, **kwargs)
+    pass

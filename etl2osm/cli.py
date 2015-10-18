@@ -9,7 +9,7 @@ from etl2osm.api import process
 
 
 @click.command()
-@click.argument('infiles', nargs=-1, help='Input file path to read.')
+@click.argument('infiles', nargs=-1)
 @click.option('--output', '-o', help='Output file path to save.')
 @click.option('--config', '-c', help='Config file for column transformation.')
 @click.option('--format', '-f', default='osm', help='Data output format [shp, geojson, osm].')

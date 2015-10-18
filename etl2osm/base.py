@@ -1,6 +1,4 @@
-#!/usr/bin/python
-# coding: utf8
-
+# -*- coding: utf-8 -*-
 
 import os
 import re
@@ -10,12 +8,10 @@ import fiona
 from collections import OrderedDict
 
 
+
+
 def process(infile, **kwargs):
     """Reads the KML document and saves it into a GeoJSON document"""
-
-    # Enable Debugging
-    if kwargs['debug']:
-        logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
     # Read config file
     config = kwargs['config']
@@ -147,30 +143,6 @@ def write_osm(geojson, outfile):
     logging.info('Creating OSM: %s' % outfile)
     raise ValueError('Creating OSM not implemented')
 
-
-def read_kml(infile, **kwargs):
-    """Reads a KML and gives the results in GeoJSON format"""
-
-    logging.info('Reading KML: %s' % infile)
-    return ValueError('Reading KML not implemented')
-
-
-def read_geojson(infile, **kwargs):
-    """Reads a GeoJSON and gives the results in GeoJSON format"""
-
-    logging.info('Reading GeoJSON: %s' % infile)
-    return ValueError('Reading GeoJSON not implemented')
-
-def read_osm(infile, **kwargs):
-    """Reads a OSM and gives the results in GeoJSON format"""
-
-    logging.info('Reading OSM: %s' % infile)
-    return ValueError('Reading OSM not implemented')
-
-def read_shp(infile, **kwargs):
-    """Reads a Shapefile and gives the results in GeoJSON format"""
-
-    logging.info('Reading Shapefile: %s' % infile)
 
 if __name__ == '__main__':
     config = 'C:/Users/Claude/Documents/GitHub/TheVillages/sources/roads/lake_county.json'

@@ -35,7 +35,7 @@ setup(
         [console_scripts]
         etl2osm=etl2osm.cli:cli
     ''',
-    packages=['ais'],
+    packages=['etl2osm'],
     package_data={'': ['LICENSE', 'README.md']},
     package_dir={'etl2osm': 'etl2osm'},
     include_package_data=True,
