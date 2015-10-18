@@ -16,14 +16,14 @@
     "type": "ftp",
     "compression": "zip",
     "conform": {
+        "type": "shapefile",
         "street": {
-        	"direction": "PrefixDire",
+            "direction": "PrefixDire",
             "prefix": "PrefixType",
             "basename": "BaseStreet",
             "suffix": "SuffixType"
         },
         "lanes": "NumberOfLa",
-        "type": "shapefile",
         "oneway": "Oneway"
     }
 }

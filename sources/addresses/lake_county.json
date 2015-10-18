@@ -16,6 +16,7 @@
     "type": "ftp",
     "compression": "zip",
     "conform": {
+        "type": "shapefile",
         "housenumber": "addressnum",
         "street": {
             "direction": "PrefixDire",
@@ -24,7 +25,6 @@
             "suffix": "SuffixType"
         },
         "postcode": "ZipCode",
-        "unit": "UnitNumber",
-        "type": "shapefile"
+        "unit": "UnitNumber"
     }
 }

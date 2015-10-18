@@ -105,14 +105,17 @@ Upload your address & road dataset into `source` as a JSON file.
 
 ```json
 {
-	"street": {
-	    "direction": "West",
-	    "basename": "Seminole",
-	    "suffix": "Avenue"
-	},
-	"maxspeed": {
-	    "mph": 45
-	}
+    "conform": {
+        "type": "shapefile",
+        "street": {
+            "direction": "West",
+            "basename": "Seminole",
+            "suffix": "Avenue"
+        },
+        "maxspeed": {
+            "mph": 45
+        }
+    }
 }
 ```
 
@@ -120,12 +123,15 @@ Upload your address & road dataset into `source` as a JSON file.
 
 ```json
 {
-    "housenumber": 264,
-    "street": {
-        "basename": "Lawthorn",
-        "suffix": "Street"
-    },
-    "postcode": 32162,
-    "unit": 4
+    "conform": {
+        "type": "shapefile",
+        "housenumber": 264,
+        "street": {
+            "basename": "Lawthorn",
+            "suffix": "Street"
+        },
+        "postcode": 32162,
+        "unit": 4
+    }
 }
 ```

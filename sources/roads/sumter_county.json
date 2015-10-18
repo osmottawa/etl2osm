@@ -16,6 +16,7 @@
     "type": "ftp",
     "compression": "zip",
     "conform": {
+        "type": "shapefile",
         "street": {
             "direction": "DIRECTION",
             "basename": "ST_NAME",
@@ -23,7 +24,6 @@
         },
         "maxspeed": {
             "mph": "Speed_Limi"
-        },
-        "type": "shapefile"
+        }
     }
 }
