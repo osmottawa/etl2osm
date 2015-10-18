@@ -96,12 +96,14 @@ $ etl2osm infile.shp --debug
 ```
 
 
-Schema
-------
+Config Schema
+-------------
 
-Upload your address & road dataset into `source` as a JSON file.
+Whenever you want to perform a transformation, include a config file in a JSON format.
 
-### Roads
+### Examples
+
+#### Road Data
 
 ```json
 {
@@ -119,7 +121,7 @@ Upload your address & road dataset into `source` as a JSON file.
 }
 ```
 
-### Address
+#### Address Data
 
 ```json
 {
