@@ -2,10 +2,12 @@
 
 from __future__ import absolute_import
 import os
+import re
 import json
+from six import string_types, binary_type
 from collections import OrderedDict
 from osgeo import osr, ogr
-from etl2osm.models import suffix, direction
+from etl2osm.models import suffix, direction, cap_except
 
 
 def reproject(feature, crs, epsg=4326):
@@ -64,8 +66,19 @@ def read_config(config):
         return json.load(f, object_pairs_hook=OrderedDict)
 
 
+def titlecase_except(value, exceptions=cap_except):
+    word_list = re.split(' ', value)
+    final = []
+    for word in word_list:
+        if word in exceptions:
+            final.append(word)
+        else:
+            final.append(word.capitalize())
+    return ' '.join(final)
+
+
 def clean_field(value, key, sub_key=''):
-    if isinstance(value, (str, unicode)):
+    if isinstance(value, (string_types, binary_type)):
         value = value.strip()
 
     if sub_key == 'suffix':
@@ -75,9 +88,7 @@ def clean_field(value, key, sub_key=''):
         if value in direction:
             return direction[str(value)]
     elif sub_key == 'title':
-        return str(value).title()
-    elif sub_key == 'capitalize':
-        return str(value).capitalize()
+        return titlecase_except(value)
     elif sub_key == 'int':
         return str(int(value))
     elif sub_key == 'mph':
@@ -91,7 +102,7 @@ def transform_fields(properties, conform):
         value = None
 
         # Replace only a single field
-        if isinstance(conform[key], (str, unicode)):
+        if isinstance(conform[key], (string_types, binary_type)):
             if conform[key] in properties:
                 value = properties[conform[key]]
                 value = clean_field(value, key)
@@ -121,7 +132,7 @@ def transform_fields(properties, conform):
                                 value = clean_field(value, k, sub_key)
                                 values.append(value)
 
-                elif isinstance(k, (str, unicode)):
+                elif isinstance(k, (string_types, binary_type)):
                     if k in properties:
                         if properties[k]:
                             value = clean_field(properties[k], key)

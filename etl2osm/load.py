@@ -33,3 +33,9 @@ if __name__ == "__main__":
     config = 'C:\Users\Claude\Documents\GitHub\TheVillages\sources\\addresses\lake_county.json'
     data = Extract(infile)
     Load(data, outfile, config)
+
+    infile = 'C:\Users\Claude\Downloads/Address2015.shp'
+    outfile = 'C:\Users\Claude\Downloads/Sumter-County_Address_WGS84.shp'
+    config = 'C:\Users\Claude\Documents\GitHub\TheVillages\sources\\addresses\sumter_county.json'
+    data = Extract(infile)
+    Load(data, outfile, config)
