@@ -5,7 +5,7 @@ import os
 import json
 from collections import OrderedDict
 from osgeo import osr, ogr
-from etl2osm.models import suffix, directions
+from etl2osm.models import suffix, direction
 
 
 def reproject(feature, crs, epsg=4326):
@@ -65,18 +65,23 @@ def read_config(config):
 
 
 def clean_field(value, key, sub_key=''):
+    if isinstance(value, (str, unicode)):
+        value = value.strip()
+
     if sub_key == 'suffix':
         if value in suffix:
             return suffix[str(value)]
-    elif sub_key == 'directions':
-        if value in directions:
-            return directions[str(value)]
+    elif sub_key == 'direction':
+        if value in direction:
+            return direction[str(value)]
     elif sub_key == 'title':
         return str(value).title()
     elif sub_key == 'capitalize':
         return str(value).capitalize()
     elif sub_key == 'int':
         return str(int(value))
+    elif sub_key == 'mph':
+        return '{0} mph'.format(value)
     return value
 
 

@@ -28,8 +28,8 @@ class Load(object):
 if __name__ == "__main__":
     from extract import Extract
 
-    infile = 'C:\Users\Claude\Downloads/Address2015.shp'
-    outfile = 'C:\Users\Claude\Downloads/Sumter-County_Adress_WGS84.shp'
-    config = 'C:\Users\Claude\Documents\GitHub\TheVillages\sources\\addresses\sumter_county.json'
+    infile = 'C:\Users\Claude\Downloads/AddressPoints.shp'
+    outfile = 'C:\Users\Claude\Downloads/Lake-County_Address_WGS84.shp'
+    config = 'C:\Users\Claude\Documents\GitHub\TheVillages\sources\\addresses\lake_county.json'
     data = Extract(infile)
     Load(data, outfile, config)

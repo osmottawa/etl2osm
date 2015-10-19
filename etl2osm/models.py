@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-directions = {
+direction = {
     "US HWY": "US",
     "CR": "CR",
     "SR": "SR",
@@ -11,11 +11,11 @@ directions = {
     "NE": "Northeast",
     "NW": "Northwest",
     "SE": "Southeast",
-    "SW": "Southwest"        
+    "SW": "Southwest"
 }
 
 suffix = {
-    "ALY":"Alley",
+    "ALY": "Alley",
     "ANX": "Annex",
     "ARC": "Arcade",
     "AVE": "Avenue",
@@ -49,9 +49,9 @@ suffix = {
     "XING": "Crossing",
     "DL": "Dale",
     "DM": "Dam",
-    "DV": "Divide",        
+    "DV": "Divide",
     "DR": "Drive",
-    "DR S ":"Drive South",
+    "DR S ": "Drive South",
     "EST": "Estates",
     "EXPY": "Expressway",
     "EXT": "Extension",
