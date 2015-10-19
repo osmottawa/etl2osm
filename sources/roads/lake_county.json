@@ -18,12 +18,12 @@
     "website": "http://www.lakecountyfl.gov/departments/information_technology/geographic_information_services/datadownloads.aspx",
     "license": "Public Domain",
     "conform": {
-        "street": {
-            "direction": "PrefixDire",
-            "prefix": "PrefixType",
-            "basename": "BaseStreet",
-            "suffix": "SuffixType"
-        },
+        "street": [
+            {"direction": "PrefixDire"},
+            "PrefixType",
+            {"title": "BaseStreet"},
+            {"suffix": "SuffixType"}
+        ],
         "lanes": "NumberOfLa",
         "oneway": "Oneway"
     }

@@ -19,7 +19,7 @@
     "conform": {
         "street": {
             "direction": "DIRECTION",
-            "basename": "ST_NAME",
+            "capitalize": "ST_NAME",
             "suffix": "ST_EXT"
         },
         "maxspeed": {
