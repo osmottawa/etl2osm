@@ -10,13 +10,13 @@
         "county": "Sumter"
     },
     "attribution": "Sumter County",
-    "data": "http://sumtercountyfl.gov/DocumentCenter/View/19095",
-    "website": "http://sumtercountyfl.gov/238/Downloadable-Maps",
-    "license": "Public Domain",
-    "type": "ftp",
-    "compression": "zip",
-    "conform": {
+    "data": {
+        "url": "http://sumtercountyfl.gov/DocumentCenter/View/19095",
         "type": "shapefile",
+        "compression": "zip"
+    },
+    "license": "Public Domain",
+    "conform": {
         "street": {
             "direction": "DIRECTION",
             "basename": "ST_NAME",

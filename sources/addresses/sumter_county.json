@@ -10,13 +10,14 @@
         "county": "Sumter"
     },
     "attribution": "Sumter County",
-    "data": "http://sumtercountyfl.gov/DocumentCenter/View/19057",
+    "data": {
+        "url": "http://sumtercountyfl.gov/DocumentCenter/View/19057",
+        "type": "shapefile",
+        "compression": "zip"
+    },
     "website": "http://sumtercountyfl.gov/238/Downloadable-Maps",
     "license": "Public Domain",
-    "type": "ftp",
-    "compression": "zip",
     "conform": {
-        "type": "shapefile",
         "housenumber": "NUMBER_",
         "street": {
             "direction": "PREDIR",
