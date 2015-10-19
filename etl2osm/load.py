@@ -11,6 +11,7 @@ from etl2osm.transform import reproject, transform_columns, read_config
 class Load(object):
     def __init__(self, data, outfile, **kwargs):
         extension = os.path.splitext(outfile)[1][1:]
+        config = read_config(kwargs['config'])
 
         write_file = {
             'osm': self.write_osm,
