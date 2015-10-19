@@ -156,6 +156,6 @@ suffix = {
     "VL": "Ville",
     "VIS": "Vista",
     "WALK": "Walk",
-    "Way": "Way",
+    "WAY": "Way",
     "WLS": "Wells"
 }

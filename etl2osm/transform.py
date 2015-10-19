@@ -56,6 +56,8 @@ def convert_polygon(p1, p2, coord):
 
 
 def read_config(config):
+    if isinstance(config, dict):
+        return config
     if not os.path.exists(config):
         raise ValueError('Config file path does not exist: %s' % config)
     with open(config) as f:
@@ -75,13 +77,13 @@ def clean_field(value, key, sub_key=''):
         return str(value).capitalize()
     elif sub_key == 'int':
         return str(int(value))
-    return str(value)
+    return value
 
 
 def transform_fields(properties, conform):
     fields = OrderedDict()
     for key in conform.keys():
-        value = ''
+        value = None
 
         # Replace only a single field
         if isinstance(conform[key], (str, unicode)):
@@ -123,7 +125,6 @@ def transform_fields(properties, conform):
             # Join all fields together to make new value
             value = ' '.join(values)
             fields.update(dict([(key, value)]))
-
     return fields
 
 
@@ -140,5 +141,5 @@ if __name__ == "__main__":
     infile = 'C:\Users\Claude\Downloads/test.shp'
     config = 'C:\Users\Claude\Documents\GitHub\TheVillages\sources\\addresses\sumter_county.json'
     data = Extract(infile)
-    f = transform_columns(data[620], config)
+    f = transform_columns(data[40], config)
     print(f)
