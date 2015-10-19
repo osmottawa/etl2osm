@@ -62,6 +62,22 @@ def read_config(config):
         return json.load(f, object_pairs_hook=OrderedDict)
 
 
+def clean_field(value, key, sub_key=''):
+    if sub_key == 'suffix':
+        if value in suffix:
+            return suffix[str(value)]
+    elif sub_key == 'directions':
+        if value in directions:
+            return directions[str(value)]
+    elif sub_key == 'title':
+        return str(value).title()
+    elif sub_key == 'capitalize':
+        return str(value).capitalize()
+    elif sub_key == 'int':
+        return str(int(value))
+    return str(value)
+
+
 def transform_fields(properties, conform):
     fields = OrderedDict()
     for key in conform.keys():
@@ -71,6 +87,7 @@ def transform_fields(properties, conform):
         if isinstance(conform[key], (str, unicode)):
             if conform[key] in properties:
                 value = properties[conform[key]]
+                value = clean_field(value, key)
             fields.update(dict([(key, value)]))
 
         # Replace & join multiple fields together
@@ -80,7 +97,7 @@ def transform_fields(properties, conform):
                 if conform[key][sub_key] in properties:
                     value = properties[conform[key][sub_key]]
                     if value:
-                        values.append(value)
+                        values.append(clean_field(value, key, sub_key))
 
             # Join all fields together to make new value
             value = ' '.join(values)
@@ -89,9 +106,19 @@ def transform_fields(properties, conform):
         elif isinstance(conform[key], (list, tuple)):
             values = []
             for k in conform[key]:
-                if k in properties:
-                    if properties[k]:
-                        values.append(properties[k])
+                if isinstance(k, dict):
+                    for sub_key, k in k.items():
+                        if k in properties:
+                            value = properties[k]
+                            if value:
+                                value = clean_field(value, k, sub_key)
+                                values.append(value)
+
+                elif isinstance(k, (str, unicode)):
+                    if k in properties:
+                        if properties[k]:
+                            value = clean_field(properties[k], key)
+                            values.append(value)
 
             # Join all fields together to make new value
             value = ' '.join(values)
