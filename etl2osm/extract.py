@@ -12,7 +12,7 @@ class Extract(object):
         self.geojson = []
         self.crs = ''
         self.crs_wkt = ''
-        self.extension = os.path.splitext(infile)[1][1:]
+        extension = os.path.splitext(infile)[1][1:]
 
         read_file = {
             'osm': self.read_osm,
@@ -25,10 +25,10 @@ class Extract(object):
         if not os.path.exists(infile):
             raise ValueError('File path does not exist: %s' % infile)
 
-        if self.extension not in read_file:
-            raise ValueError('etl2osm cannot read file extension: %s' % self.extension)
+        if extension not in read_file:
+            raise ValueError('etl2osm cannot read file extension: %s' % extension)
 
-        read_file[self.extension](infile, **kwargs)
+        read_file[extension](infile, **kwargs)
 
     def __len__(self):
         return len(self.geojson)
