@@ -3,7 +3,7 @@
 from __future__ import absolute_import
 import fiona
 from fiona.crs import from_epsg
-from etl2osm import reproject
+from etl2osm.transform import reproject
 
 
 class Load(object):
@@ -26,7 +26,7 @@ class Load(object):
 if __name__ == "__main__":
     from extract import Extract
 
-    infile = 'C:\Users\Claude\Downloads/Address2015.shp'
-    outfile = 'C:\Users\Claude\Downloads/AddressTEST.shp'
+    infile = 'C:\Users\Claude\Downloads/test.shp'
+    outfile = 'C:\Users\Claude\Downloads/test2.shp'
     data = Extract(infile)
     Load(data, outfile)
