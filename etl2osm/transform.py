@@ -152,10 +152,4 @@ def transform_columns(feature, config):
 
 
 if __name__ == "__main__":
-    from extract import Extract
-
-    infile = 'C:\Users\Claude\Downloads/test.shp'
-    config = 'C:\Users\Claude\Documents\GitHub\TheVillages\sources\\addresses\sumter_county.json'
-    data = Extract(infile)
-    f = transform_columns(data[40], config)
-    print(f)
+    pass

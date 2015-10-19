@@ -91,7 +91,4 @@ class Extract(object):
 
 
 if __name__ == '__main__':
-    # logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
-    infile = 'C:\Users\Claude\Downloads/Address2015.shp'
-    data = Extract(infile)
-    print(data)
+    pass
