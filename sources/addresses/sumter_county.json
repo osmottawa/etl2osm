@@ -21,7 +21,7 @@
         "number": {"int": "NUMBER_"},
         "street": [
             {"direction": "PREDIR"},
-            {"capitalize": "ST_NAME"},
+            {"title": "ST_NAME"},
             {"suffix": "STSUFFIX"}
         ],
         "postcode": {"int": "ZIP_CODES"},

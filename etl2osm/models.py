@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 
+cap_except = [
+    "'s",
+    "the",
+    "in",
+    "a",
+    "CR",
+    "US",
+    "SR"
+]
+
 direction = {
-    "US HWY": "US",
-    "CR": "CR",
-    "SR": "SR",
     "N": "North",
     "S": "South",
     "E": "East",

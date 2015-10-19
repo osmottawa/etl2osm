@@ -22,7 +22,7 @@
         "street": [
             {"direction": "PrefixDire"},
             "PrefixType",
-            {"capitalize": "BaseStreet"},
+            {"title": "BaseStreet"},
             {"suffix": "SuffixType"}
         ],
         "postcode": "ZipCode",

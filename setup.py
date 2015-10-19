@@ -19,7 +19,7 @@ if not version:
 with open('README.md', 'r', 'utf-8') as f:
     readme = f.read()
 
-requires = ['click', 'gdal', 'fiona']
+requires = ['click', 'gdal', 'fiona', 'six']
 
 setup(
     name='etl2osm',
@@ -28,8 +28,8 @@ setup(
     long_description=readme,
     author='OSM Canada Team',
     author_email='carriere.denis@gmail.com',
-    url='https://github.com/osmottawa/TheVillages/',
-    download_url='https://github.com/osmottawa/TheVillages/',
+    url='https://github.com/osmottawa/etl2osm/',
+    download_url='https://github.com/osmottawa/etl2osm/',
     license="The MIT License",
     entry_points='''
         [console_scripts]
