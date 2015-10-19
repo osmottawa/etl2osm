@@ -32,7 +32,7 @@ Install the latest version directly from Github.
 ```bash
 $ git clone https://github.com/osmottawa/etl2osm/
 $ cd etl2osm
-$ python setup.py install
+$ pip install .
 ```
 
 Python API
