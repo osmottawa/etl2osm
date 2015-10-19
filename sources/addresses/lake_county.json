@@ -1,0 +1,31 @@
+{
+    "coverage": {
+        "US Census": {
+            "geoid": "12069",
+            "name": "Lake County",
+            "state": "Florida"
+        },
+        "country": "us",
+        "state": "fl",
+        "county": "Lake"
+    },
+    "attribution": "Lake County",
+    "data": {
+        "url": "ftp://ftp.co.lake.fl.us/GIS/GisDownloads/Shapefiles/AddressPoints.zip",
+        "type": "shapefile",
+        "compression": "zip"
+    },
+    "website": "http://www.lakecountyfl.gov/departments/information_technology/geographic_information_services/datadownloads.aspx",
+    "license": "Public Domain",
+    "conform": {
+        "number": "AddressNum",
+        "street": [
+            {"direction": "PrefixDire"},
+            "PrefixType",
+            {"capitalize": "BaseStreet"},
+            {"suffix": "SuffixType"}
+        ],
+        "postcode": "ZipCode",
+        "unit": "UnitNumber"
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "coverage": {
+        "US Census": {
+            "geoid": "12119",
+            "name": "Sumter County",
+            "state": "Florida"
+        },
+        "country": "us",
+        "state": "fl",
+        "county": "Sumter"
+    },
+    "attribution": "Sumter County",
+    "data": {
+        "url": "http://sumtercountyfl.gov/DocumentCenter/View/19095",
+        "type": "shapefile",
+        "compression": "zip"
+    },
+    "license": "Public Domain",
+    "conform": {
+        "street": {
+            "direction": "DIRECTION",
+            "capitalize": "ST_NAME",
+            "suffix": "ST_EXT"
+        },
+        "maxspeed": {
+            "mph": "Speed_Limi"
+        }
+    }
+}

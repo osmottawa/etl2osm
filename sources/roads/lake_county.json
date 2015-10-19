@@ -1,0 +1,30 @@
+{
+    "coverage": {
+        "US Census": {
+            "geoid": "12069",
+            "name": "Lake County",
+            "state": "Florida"
+        },
+        "country": "us",
+        "state": "fl",
+        "county": "Lake"
+    },
+    "attribution": "Lake County",
+    "data": {
+        "url": "ftp://ftp.co.lake.fl.us/GIS/GisDownloads/Shapefiles/Streets.zip",
+        "type": "shapefile",
+        "compression": "zip"
+    },
+    "website": "http://www.lakecountyfl.gov/departments/information_technology/geographic_information_services/datadownloads.aspx",
+    "license": "Public Domain",
+    "conform": {
+        "street": [
+            {"direction": "PrefixDire"},
+            "PrefixType",
+            {"title": "BaseStreet"},
+            {"suffix": "SuffixType"}
+        ],
+        "lanes": "NumberOfLa",
+        "oneway": "Oneway"
+    }
+}
