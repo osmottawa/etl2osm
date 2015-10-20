@@ -18,9 +18,8 @@ def cli(infiles, debug, **kwargs):
     """Command Line Interface for ETL2OSM"""
 
     # Enable Debugging
-    if "debug" in kwargs: #Check if debug exists
-        if kwargs['debug']:
-            logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+    if kwargs.get('debug') in [True, 'info', 'debug', 'warning', 'error', 'critical', 'log']:
+        logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
     # Process Input files
     if infiles:
