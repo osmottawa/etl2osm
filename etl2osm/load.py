@@ -10,9 +10,22 @@ from etl2osm.transform import reproject, transform_columns, read_config
 
 class Load(object):
     def __init__(self, data, **kwargs):
-        outfile = kwargs['outfile']
-        extension = os.path.splitext(outfile)[1][1:]
-        config = read_config(kwargs['config'])
+
+        # Default output file extenion to Shapefile
+        if 'outfile' in kwargs:
+            outfile = kwargs.pop('outfile')
+            extension = os.path.splitext(outfile)[1][1:]
+        else:
+            # =====
+            # To-Do
+            # -----
+            # If outfile path is not present, define it with the infile name
+            #
+            outfile = ''
+            extension = 'shp'
+
+        if 'config' in kwargs:
+            config = read_config(kwargs.pop('config'))
 
         write_file = {
             'osm': self.write_osm,
@@ -25,7 +38,9 @@ class Load(object):
     def write_shapefile(self, data, outfile, config, **kwargs):
         """ Writes data to Shapefile format """
 
+        # Data attributes from configuration file
         properties = dict((key, 'str') for key in config['conform'].keys())
+
         # Default Coordinate reference system is WGS84
         crs = from_epsg(4326)
         driver = 'ESRI Shapefile'
