@@ -9,7 +9,8 @@ from etl2osm.transform import reproject, transform_columns, read_config
 
 
 class Load(object):
-    def __init__(self, data, outfile, **kwargs):
+    def __init__(self, data, **kwargs):
+        outfile = kwargs['outfile']
         extension = os.path.splitext(outfile)[1][1:]
         config = read_config(kwargs['config'])
 

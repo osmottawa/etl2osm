@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
-import etl2osm.extract as cl_extract
-import etl2osm.load as cl_load
+from etl2osm.extract import Extract
+from etl2osm.load import Load
 
 def process(infile, **kwargs):
     """ All in one process for doing ETL2OSM
@@ -12,11 +12,7 @@ def process(infile, **kwargs):
     :param ``config``: Config file for column transformation.
     :param ``format``: Data output format [shp, geojson, osm].
     """
-    data = extract(infile,**kwargs)
-    data = transform(data,**kwargs)
-    load(data,**kwargs)
-    
-    
+    raise ValueError('Process function is not implemented in the API yet.')
     pass
 
 
@@ -25,7 +21,7 @@ def extract(infile, **kwargs):
 
     :argument ``infile``: Input file path to read.
     """
-    return cl_extract.Extract(infile,**kwargs)
+    return Extract(infile, **kwargs)
 
 
 
@@ -45,4 +41,4 @@ def load(data, **kwargs):
     :param ``outfile``: Output file path to save.
     :param ``format``: Data output format [shp, geojson, osm].
     """
-    cl_load.Load(data,kwargs["output"],**kwargs)
+    Load(data, **kwargs)
