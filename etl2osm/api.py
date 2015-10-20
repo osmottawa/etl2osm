@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
-import extract as cl_extract
-import load as cl_load
+import etl2osm.extract as cl_extract
+import etl2osm.load as cl_load
 
 def process(infile, **kwargs):
     """ All in one process for doing ETL2OSM
