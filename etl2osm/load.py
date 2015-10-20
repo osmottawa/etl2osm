@@ -16,7 +16,7 @@ class Load(object):
         write_file = {
             'osm': self.write_osm,
             'geojson': self.write_geojson,
-            'shp': self.write_shp,
+            'shp': self.write_shapefile,
             'kml': self.write_kml,
         }
         write_file[extension](data, outfile, config, **kwargs)
