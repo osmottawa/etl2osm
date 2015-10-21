@@ -1,0 +1,24 @@
+sudo: false
+language: python
+python:
+  - "2.6"
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "pypy"
+  - "pypy3"
+
+before_install:
+  - apt-get install python-gdal
+  - pip install -r requirements.txt
+
+install:
+  - python setup.py develop
+
+script:
+  - py.test test_etl2osm.py
+
+notifications:
+  email:
+    - carriere.denis@gmail.com
