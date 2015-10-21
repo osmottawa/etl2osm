@@ -12,6 +12,9 @@ def process(infile, **kwargs):
     :param ``config``: Config file for column transformation.
     :param ``format``: Data output format [shp, geojson, osm].
     """
+    data = extract(infile,**kwargs)
+    data = transform(data,**kwargs)
+    load(data,infile=infile,outfile=kwargs["output"],**kwargs)
     raise ValueError('Process function is not implemented in the API yet.')
     pass
 
@@ -34,7 +37,7 @@ def transform(data, **kwargs):
     return data
 
 
-def load(data, **kwargs):
+def load(data,**kwargs):
     """ Loads data into a specific format.
 
     :argument ``data``: Data that has already been extracted.
