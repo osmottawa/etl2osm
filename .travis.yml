@@ -6,7 +6,8 @@ addons:
     - python-gdal
     - gdal-bin
     - fiona
-    - gcc
+    - gcc-4.8
+    - g++-4.8
 
 python:
   - "2.7"

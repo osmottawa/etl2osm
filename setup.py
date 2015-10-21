@@ -19,7 +19,7 @@ if not version:
 with open('README.rst', 'r', 'utf-8') as f:
     readme = f.read()
 
-requires = ['click', 'six', 'fiona']
+requires = ['click', 'six', 'fiona', 'gdal']
 
 setup(
     name='etl2osm',

@@ -1,3 +1,4 @@
 click
 six
 fiona
+gdal
