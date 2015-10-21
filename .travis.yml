@@ -1,21 +1,5 @@
 language: python
 sudo: false
-cache:
-  directories:
-    - $GDALINST
-    - ~/.cache/pip
-
-env:
-  global:
-    - PIP_WHEEL_DIR=$HOME/.cache/pip/wheels
-    - PIP_FIND_LINKS=file://$HOME/.cache/pip/wheels
-    - GDALINST=$HOME/gdalinstall
-    - GDALBUILD=$HOME/gdalbuild
-  matrix:
-    - GDALVERSION = "1.9.2"
-    - GDALVERSION = "1.11.2"
-      #- GDALVERSION = "2.0.1"
-
 addons:
   apt:
     packages:
