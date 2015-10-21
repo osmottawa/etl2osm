@@ -5,6 +5,12 @@ addons:
     packages:
     - python-gdal
     - gdal-bin
+    - fiona
+    - libgdal1-dev
+    - libgdal1h
+    - libgdal-dev
+    - libatlas-dev
+    - libatlas-base-dev
 
 python:
   - "2.7"
