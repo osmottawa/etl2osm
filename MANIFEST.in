@@ -1,3 +1,5 @@
 include README.rst
-include test_etl2osm.py
+recursive-include tests *.py *.rst
+recursive-include examples *.json
 include requirements.txt
+exclude MANIFEST.in
