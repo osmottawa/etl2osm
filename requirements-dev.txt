@@ -4,6 +4,3 @@ pytest-cov
 pytest-pep8
 setuptools >= 0.9.8
 wheel
-click
-six
-fiona
