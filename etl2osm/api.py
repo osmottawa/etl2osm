@@ -4,6 +4,7 @@ from __future__ import absolute_import
 from etl2osm.extract import Extract
 from etl2osm.load import Load
 
+
 def process(infile, **kwargs):
     """ All in one process for doing ETL2OSM
 
@@ -22,7 +23,6 @@ def extract(infile, **kwargs):
     :argument ``infile``: Input file path to read.
     """
     return Extract(infile, **kwargs)
-
 
 
 def transform(data, **kwargs):

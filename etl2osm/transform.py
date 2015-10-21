@@ -4,20 +4,41 @@ from __future__ import absolute_import
 import os
 import re
 import json
+import logging
 from six import string_types, binary_type
 from collections import OrderedDict
 from osgeo import osr, ogr
 from etl2osm.models import suffix, direction, cap_except
 
 
-def reproject(feature, crs, epsg=4326):
+def get_coordinate_rerefence_system(crs):
+    projection = osr.SpatialReference()
+
+    # Read Projection from EPSG or WKT
+    # For all EPSG projections
+    # http://spatialreference.org/ref/epsg/wgs-84/
+    if isinstance(crs, int):
+        valid = projection.ImportFromEPSG(crs)
+
+    elif isinstance(crs, (string_types, binary_type)):
+        valid = projection.ImportFromWkt()
+    else:
+        raise ValueError('Cannot detect the type Coordinate Reference System (CRS)')
+
+    # Check if results are valid (0 == Valid projection)
+    if valid == 0:
+        logging.info('Get CRS: %s' % projection)
+        return projection
+    else:
+        raise ValueError('EPSG provided was invalid for CRS: {0}'.format(crs))
+
+
+def reproject(feature, crs_source, crs_target=4326):
     # Source Projection
-    p1 = osr.SpatialReference()
-    p1.ImportFromWkt(crs)
+    p1 = get_coordinate_rerefence_system(crs_source)
 
     # Output Projection (WGS84)
-    p2 = osr.SpatialReference()
-    p2.ImportFromEPSG(epsg)
+    p2 = get_coordinate_rerefence_system(crs_target)
 
     geom = feature['geometry']
     coord = feature['geometry']['coordinates']
@@ -27,6 +48,7 @@ def reproject(feature, crs, epsg=4326):
         'LineString': convert_linestring,
         'Polygon': convert_polygon,
     }
+
     if geom['type'] not in convert:
         raise ValueError('Reproject geometry type not implemented: %s' % geom['type'])
     feature['geometry']['coordinates'] = convert[geom['type']](p1, p2, coord)
@@ -152,4 +174,11 @@ def transform_columns(feature, config):
 
 
 if __name__ == "__main__":
-    pass
+    logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+    feature = {
+        "type": "Feature",
+        "geometry": {"type": "Point", "coordinates": [100.0, 0.5]}
+    }
+    feature2 = reproject(feature, 4326, 4326)
+    print(feature == feature2)
+    print(feature2)
