@@ -1,6 +1,4 @@
-cython>=0.21.2
-nose
-coveralls>=0.4
+coveralls >= 0.4
 pytest
 pytest-cov
 pytest-pep8
