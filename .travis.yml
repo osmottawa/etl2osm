@@ -6,21 +6,21 @@ addons:
     - python-gdal
     - gdal-bin
     - fiona
-    - gcc-4.8
-    - g++-4.8
-    - libgdal1-dev
+    - python-dev
+    - python3-dev
 
 python:
   - "2.7"
   - "3.3"
   - "3.4"
+  - "pypy"
+  - "pypy3"
 
 before_install:
   - pip install -U pip
-  - pip install -r requirements-dev.txt
-  - pip install fiona
 
 install:
+  - pip install -r requirements-dev.txt
   - pip install -r requirements.txt
   - pip install -e .
 
