@@ -37,8 +37,8 @@ To see what's happening, you can turn on the `Debug` mode.
     etl2osm.process(infile, debug=True)
 
 
-CLI API
--------
+Command Line Interface
+----------------------
 
 Reading the a file, the standard output will be in a GeoJSON format.
 
