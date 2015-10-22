@@ -9,6 +9,21 @@ Extract, Transform and Load to OpenStreetMap
 .. image:: https://travis-ci.org/osmottawa/etl2osm.svg?branch=master
     :target: https://travis-ci.org/osmottawa/etl2osm
 
+Features
+--------
+
+- Extracts & Loads data from multiple formats:
+  - Shapefile 
+  - GeoJSON
+  - OSM
+  - KML (Coming Soon)
+- Replace direction fields (NE > Northeast, SW > Southwest)
+- Replace street suffix fields (AVE > Avenue, ST > Street)
+- Change & remove attribute names
+- Convert text fields into proper titlecase (ottawa ONTARIO > Ottawa Ontario)
+- Transform data into WGS84 (EPSG:4326)
+
+
 API Overview
 ------------
 
