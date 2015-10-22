@@ -16,6 +16,7 @@ before_install:
   - sudo apt-get install -y python-gdal
   - sudo apt-get install -y libgdal-dev
   - sudo pip install Fiona
+  - sudo easy install GDAL
   - pip install -U pip
 
 install:
