@@ -13,10 +13,12 @@ Features
 --------
 
 - Extracts & Loads data from multiple formats:
+
   - Shapefile 
   - GeoJSON
   - OSM
   - KML (Coming Soon)
+
 - Replace direction fields (NE > Northeast, SW > Southwest)
 - Replace street suffix fields (AVE > Avenue, ST > Street)
 - Change & remove attribute names
