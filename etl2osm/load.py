@@ -92,6 +92,9 @@ class Load(object):
                     osm_id+=1
                 self.write_osm_way(f_osm,osm_id,shape_nodeIDs,feature["properties"])
                 osm_id+=1
+            elif feature["geometry"]["type"]=="Point":
+                self.write_osm_node(f_osm,osm_id,feature["geometry"]["coordinates"][1],feature["geometry"]["coordinates"][0],feature["properties"])
+                osm_id+=1
         f_osm.write("</osm>")
         f_osm.close()   
         
@@ -122,7 +125,7 @@ class Load(object):
         if ("number" in properties and "street" in properties): #might not exist
             if (not properties["number"]==None and not properties["street"]==None):
                 #Both addr:housenumber and addr:street are required to be a valid address node
-                FileHandle.write("    <tag k='addr:housenumber' v='"+ "{0:g}".format(properties["number"]) +"' />\n") 
+                FileHandle.write("    <tag k='addr:housenumber' v='"+ properties["number"] +"' />\n") 
                 FileHandle.write("    <tag k='addr:street' v='" + properties["street"]+"' />\n")
                 if "postcode" in properties:
                     if not properties["postcode"]==None:
