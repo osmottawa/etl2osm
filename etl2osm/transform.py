@@ -21,7 +21,7 @@ def get_coordinate_rerefence_system(crs):
         valid = projection.ImportFromEPSG(crs)
 
     elif isinstance(crs, (string_types, binary_type)):
-        valid = projection.ImportFromWkt()
+        valid = projection.ImportFromWkt(crs)
     else:
         raise ValueError('Cannot detect the type Coordinate Reference System (CRS)')
 
