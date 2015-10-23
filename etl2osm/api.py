@@ -15,7 +15,7 @@ def process(infile, **kwargs):
     """
     data = extract(infile, **kwargs)
     data = transform(data, **kwargs)
-    load(data, infile=infile,outfile=kwargs["output"], **kwargs)
+    load(data, infile=infile, outfile=kwargs["output"], **kwargs)
     raise ValueError('Process function is not implemented in the API yet.')
     pass
 

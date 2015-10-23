@@ -8,8 +8,6 @@ from fiona.crs import from_epsg
 import datetime
 from etl2osm.transform import reproject, transform_columns, read_config
 
-
-
 class Load(object):
     def __init__(self, data, **kwargs):
 
@@ -59,8 +57,8 @@ class Load(object):
 
     def write_osm(self, data, outfile, config, **kwargs):
         """ Writes data to OSM format """
-        osm_id=1
-        shape_nodeIDs=[]
+        osm_id = 1
+        shape_nodeIDs = []
         # Data attributes from configuration file
         properties = dict((key, 'str') for key in config['conform'].keys())
 
@@ -71,7 +69,7 @@ class Load(object):
         schema = data.schema
         schema['properties'] = properties
         
-        f_osm = open(outfile,"w")
+        f_osm = open(outfile, "w")
         self.write_osm_header(f_osm)
 		#---- TO DO ----
 		# Handle MultiLineString
@@ -84,16 +82,16 @@ class Load(object):
             feature = transform_columns(feature, config)
             #start by writing all the nodes
             if feature["geometry"]["type"]=="LineString":
-                shape_nodeIDs=[]
+                shape_nodeIDs = []
                 for node in feature["geometry"]["coordinates"]:
                     #write nodes
-                    self.write_osm_node(f_osm,osm_id,node[1],node[0],feature["properties"])
+                    self.write_osm_node(f_osm, osm_id, node[1], node[0], feature["properties"])
                     shape_nodeIDs.append(osm_id)
                     osm_id+=1
-                self.write_osm_way(f_osm,osm_id,shape_nodeIDs,feature["properties"])
+                self.write_osm_way(f_osm, osm_id, shape_nodeIDs, feature["properties"])
                 osm_id+=1
             elif feature["geometry"]["type"]=="Point":
-                self.write_osm_node(f_osm,osm_id,feature["geometry"]["coordinates"][1],feature["geometry"]["coordinates"][0],feature["properties"])
+                self.write_osm_node(f_osm, osm_id, feature["geometry"]["coordinates"][1], feature["geometry"]["coordinates"][0], feature["properties"])
                 osm_id+=1
         f_osm.write("</osm>")
         f_osm.close()   
@@ -117,39 +115,38 @@ class Load(object):
         """ Writes JOSM xml header """
         FileHandle.write("<?xml version='1.0' encoding='UTF-8'?>\n<osm version='0.6' upload='true' generator='JOSM'>\n")
     
-    def write_osm_node(self,FileHandle,osm_id,latitude,longitude,properties,**kwargs):
+    def write_osm_node(self, FileHandle, osm_id, latitude, longitude, properties, **kwargs):
         """ Writes JOSM xml node """
 		#---- TO DO ----
 		# Read from JSON Config
-        FileHandle.write("  <node id='-" +str(osm_id)+ "' action='modify' visible='true' lat='"+str(latitude)+"' lon='"+str(longitude)+"'>\n")
+        FileHandle.write("  <node id='-" + str(osm_id) + "' action='modify' visible='true' lat='" + str(latitude) + "' lon='" + str(longitude) + "'>\n")
         if ("number" in properties and "street" in properties): #might not exist
             if (not properties["number"]==None and not properties["street"]==None):
                 #Both addr:housenumber and addr:street are required to be a valid address node
-                FileHandle.write("    <tag k='addr:housenumber' v='"+ properties["number"] +"' />\n") 
-                FileHandle.write("    <tag k='addr:street' v='" + properties["street"]+"' />\n")
+                FileHandle.write("    <tag k='addr:housenumber' v='" + properties["number"] + "' />\n") 
+                FileHandle.write("    <tag k='addr:street' v='" + properties["street"] + "' />\n")
                 if "postcode" in properties:
                     if not properties["postcode"]==None:
-                        FileHandle.write("    <tag k='addr:postcode' v='"+properties["postcode"]+"' />\n")
+                        FileHandle.write("    <tag k='addr:postcode' v='" + properties["postcode"] + "' />\n")
                 if "unit" in properties:
                     if not properties["unit"]==None:
-                        FileHandle.write("    <tag k='addr:unit' v='"+properties["unit"]+"' />\n")
-                        FileHandle.write("    <tag k='ref' v='"+properties["unit"]+"' />\n")
+                        FileHandle.write("    <tag k='addr:unit' v='" + properties["unit"] + "' />\n")
+                        FileHandle.write("    <tag k='ref' v='" + properties["unit"] + "' />\n")
         FileHandle.write("  </node>\n")
     
-    def write_osm_way(self,FileHandle,osm_id,ref_nodes,properties,**kwargs):
+    def write_osm_way(self, FileHandle, osm_id, ref_nodes, properties, **kwargs):
         """ Writes JOSM xml segment """
 		#---- TO DO ----
 		# Read from JSON Config
-        FileHandle.write("  <way id='-"+str(osm_id)+"' action='modify' visible='true'>\n")
+        FileHandle.write("  <way id='-" + str(osm_id) + "' action='modify' visible='true'>\n")
         #Write nodes that belong to way(ids)
         for node in ref_nodes:
-            FileHandle.write("    <nd ref='-"+str(node)+"' />\n")
+            FileHandle.write("    <nd ref='-" + str(node) + "' />\n")
         if not properties["street"]==None:
             FileHandle.write("    <tag k='name' v='"+properties["street"]+"' />\n")
             FileHandle.write("    <tag k='highway' v='road' />\n")
         
-        FileHandle.write("  </way>\n")        
-            
+        FileHandle.write("  </way>\n")
         
 
 if __name__ == "__main__":
