@@ -73,6 +73,10 @@ class Load(object):
         
         f_osm = open(outfile,"w")
         self.write_osm_header(f_osm)
+		#---- TO DO ----
+		# Handle MultiLineString
+		# Handle Points
+		# Handle MultiPoints
         #write header
         for feature in data:
             # Reproject data to WGS84 before saving
@@ -89,12 +93,10 @@ class Load(object):
                 self.write_osm_way(f_osm,osm_id,shape_nodeIDs,feature["properties"])
                 osm_id+=1
         f_osm.write("</osm>")
-        f.close()    
-        
-        
+        f_osm.close()   
         
         logging.info('Writing OSM: %s' % outfile)
-        return ValueError('Writing OSM not implemented')
+        
 
     def write_kml(self, data, outfile, config, **kwargs):
         """ Writes data to KML format """
@@ -114,6 +116,8 @@ class Load(object):
     
     def write_osm_node(self,FileHandle,osm_id,latitude,longitude,properties,**kwargs):
         """ Writes JOSM xml node """
+		#---- TO DO ----
+		# Read from JSON Config
         FileHandle.write("  <node id='-" +str(osm_id)+ "' action='modify' visible='true' lat='"+str(latitude)+"' lon='"+str(longitude)+"'>\n")
         if ("number" in properties and "street" in properties): #might not exist
             if (not properties["number"]==None and not properties["street"]==None):
@@ -131,6 +135,8 @@ class Load(object):
     
     def write_osm_way(self,FileHandle,osm_id,ref_nodes,properties,**kwargs):
         """ Writes JOSM xml segment """
+		#---- TO DO ----
+		# Read from JSON Config
         FileHandle.write("  <way id='-"+str(osm_id)+"' action='modify' visible='true'>\n")
         #Write nodes that belong to way(ids)
         for node in ref_nodes:
