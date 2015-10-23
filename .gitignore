@@ -22,3 +22,6 @@ env/
 t.py
 t2.py
 dist
+.tox/
+.cache/
+wheelhouse/

@@ -16,10 +16,10 @@ with open('etl2osm/__init__.py', 'r') as fd:
 if not version:
     raise RuntimeError('Cannot find version information')
 
-with open('README.md', 'r', 'utf-8') as f:
+with open('README.rst', 'r', 'utf-8') as f:
     readme = f.read()
 
-requires = ['click', 'gdal', 'fiona', 'six']
+requires = ['click', 'six']
 
 setup(
     name='etl2osm',
@@ -36,7 +36,7 @@ setup(
         etl2osm=etl2osm.cli:cli
     ''',
     packages=['etl2osm'],
-    package_data={'': ['LICENSE', 'README.md']},
+    package_data={'': ['LICENSE', 'README.rst']},
     package_dir={'etl2osm': 'etl2osm'},
     include_package_data=True,
     install_requires=requires,
