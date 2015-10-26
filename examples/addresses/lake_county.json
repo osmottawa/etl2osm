@@ -26,6 +26,7 @@
             {"suffix": "SuffixType"}
         ],
         "postcode": "ZipCode",
-        "unit": "UnitNumber"
+        "unit": "UnitNumber",
+        "alt_name": "AliasName"
     }
 }
