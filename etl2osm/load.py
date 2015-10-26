@@ -18,7 +18,7 @@ class Load(object):
             extension = os.path.splitext(outfile)[1][1:]
         else:
             # If outfile path is not present, define it with the infile name
-            if "infile" in kwargs:  #append "_output" incase the input file is a shp file
+            if "infile" in kwargs:  # append "_output" incase the input file is a shp file
                 outfile = os.path.splitext(kwargs["infile"])[0] + "_output" + os.path.splitext(kwargs["infile"])[1]
                 extension = "shp"
             else:  # if not passed into function generate random name based on runtime
@@ -111,39 +111,39 @@ class Load(object):
         logging.info('Writing GeoJSON: %s' % outfile)
         return ValueError('Writing GeoJSON not implemented')
 
-    def write_osm_header(self,FileHandle,**kwargs):
+    def write_osm_header(self, FileHandle, **kwargs):
         """ Writes JOSM xml header """
         FileHandle.write("<?xml version='1.0' encoding='UTF-8'?>\n<osm version='0.6' upload='true' generator='JOSM'>\n")
 
     def write_osm_node(self, FileHandle, osm_id, latitude, longitude, properties, **kwargs):
         """ Writes JOSM xml node """
-		# TO DO:
-		# Read from JSON Config
+        # TO DO:
+        # Read from JSON Config
         FileHandle.write("  <node id='-" + str(osm_id) + "' action='modify' visible='true' lat='" + str(latitude) + "' lon='" + str(longitude) + "'>\n")
-        if ("number" in properties and "street" in properties):  #might not exist
-            if (not properties["number"]==None and not properties["street"]==None):
-                #Both addr:housenumber and addr:street are required to be a valid address node
-                FileHandle.write("    <tag k='addr:housenumber' v='" + properties["number"] + "' />\n") 
+        if ("number" in properties and "street" in properties):  # might not exist
+            if (not properties["number"] == None and not properties["street"] == None):
+                # Both addr:housenumber and addr:street are required to be a valid address node
+                FileHandle.write("    <tag k='addr:housenumber' v='" + properties["number"] + "' />\n")
                 FileHandle.write("    <tag k='addr:street' v='" + properties["street"] + "' />\n")
                 if "postcode" in properties:
-                    if not properties["postcode"]==None:
+                    if not properties["postcode"] == None:
                         FileHandle.write("    <tag k='addr:postcode' v='" + properties["postcode"] + "' />\n")
                 if "unit" in properties:
-                    if not properties["unit"]==None:
+                    if not properties["unit"] == None:
                         FileHandle.write("    <tag k='addr:unit' v='" + properties["unit"] + "' />\n")
                         FileHandle.write("    <tag k='ref' v='" + properties["unit"] + "' />\n")
         FileHandle.write("  </node>\n")
 
     def write_osm_way(self, FileHandle, osm_id, ref_nodes, properties, **kwargs):
         """ Writes JOSM xml segment """
-		# TO DO:
-		# Read from JSON Config
+        # TO DO:
+        # Read from JSON Config
         FileHandle.write("  <way id='-" + str(osm_id) + "' action='modify' visible='true'>\n")
         # Write nodes that belong to way(ids)
         for node in ref_nodes:
             FileHandle.write("    <nd ref='-" + str(node) + "' />\n")
-        if not properties["street"]==None:
-            FileHandle.write("    <tag k='name' v='"+properties["street"]+"' />\n")
+        if not properties["street"] == None:
+            FileHandle.write("    <tag k='name' v='" + properties["street"] + "' />\n")
             FileHandle.write("    <tag k='highway' v='road' />\n")
 
         FileHandle.write("  </way>\n")
