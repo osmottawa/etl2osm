@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 import etl2osm
+from collections import OrderedDict
 
 
 def test_reproject_point():
@@ -81,3 +82,29 @@ def test_reproject_geometry_collection():
     # Not implemented
     # http://geojson.org/geojson-spec.html#geometrycollection
     pass
+
+
+def test_transform_columns_basic():
+    config = {
+        "conform": {
+            "address": "ADDR",
+            "full": "FULL",
+        }
+    }
+    feature = {
+        "type": "Feature",
+        "properties": {
+            "ADDR": "HWY 41",
+            "FULL": "65 Street Name"
+        }
+    }
+    result = {
+        "type": "Feature",
+        "properties": OrderedDict(
+            address="HWY 41",
+            full="65 Street Name"
+        )
+    }
+
+    feature = etl2osm.transform_columns(feature, config)
+    assert feature == result
