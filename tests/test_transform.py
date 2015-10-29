@@ -84,27 +84,141 @@ def test_reproject_geometry_collection():
     pass
 
 
-def test_transform_columns_basic():
+def test_transform_columns_string():
     config = {
         "conform": {
-            "address": "ADDR",
-            "full": "FULL",
+            "address": "ADDRESS",
+            "number": "NUMBER",
         }
     }
     feature = {
         "type": "Feature",
         "properties": {
-            "ADDR": "HWY 41",
-            "FULL": "65 Street Name"
+            "ADDRESS": "Highway 41",
+            "NUMBER": "65"
         }
     }
     result = {
         "type": "Feature",
         "properties": OrderedDict(
-            address="HWY 41",
-            full="65 Street Name"
+            address="Highway 41",
+            number="65"
         )
     }
-
     feature = etl2osm.transform_columns(feature, config)
     assert feature == result
+
+
+def test_transform_columns_dict():
+    config = {
+        "conform": {
+            "number": {'field': "NUMBER", 'int': True}
+        }
+    }
+    feature = {
+        "type": "Feature",
+        "properties": {
+            "NUMBER": "65"
+        }
+    }
+    result = {
+        "type": "Feature",
+        "properties": OrderedDict(
+            number=65
+        )
+    }
+    feature = etl2osm.transform_columns(feature, config)
+    assert feature == result
+
+
+def test_transform_columns_list():
+    config = {
+        "conform": {
+            "street": ["NUMBER", "STREET"]
+        }
+    }
+    feature = {
+        "type": "Feature",
+        "properties": {
+            "NUMBER": "65",
+            "STREET": "Rideau Street"
+        }
+    }
+    result = {
+        "type": "Feature",
+        "properties": OrderedDict(
+            street="65 Rideau Street"
+        )
+    }
+    feature = etl2osm.transform_columns(feature, config)
+    assert feature == result
+
+
+def test_transform_regex():
+    conform = {'function': 'regexp', 'field': 'NAME', 'pattern': '^([0-9]+)'}
+    properties = {'NAME': '65 Street Name'}
+    assert etl2osm.clean_field(properties, conform) == '65'
+
+
+def test_transform_regex_replace():
+    conform = {'function': 'regexp', 'field': 'NAME', 'pattern': '^(HWY)', 'replace': 'Highway'}
+    properties = {'NAME': 'HWY 174'}
+    assert etl2osm.clean_field(properties, conform) == 'Highway 174'
+
+
+def test_transform_regex_int():
+    conform = {'function': 'regexp', 'field': 'NAME', 'pattern': '^([0-9]+)', 'int': True}
+    properties = {'NAME': '65 Street Name'}
+    assert etl2osm.clean_field(properties, conform) == 65
+
+
+def test_transform_int():
+    conform = {'field': 'NUMBER', 'int': True}
+    properties = {'NUMBER': '65'}
+    assert etl2osm.clean_field(properties, conform) == 65
+
+
+def test_transform_float():
+    conform = {'field': 'NUMBER', 'float': True}
+    properties = {'NUMBER': '65.145'}
+    assert etl2osm.clean_field(properties, conform) == 65.145
+
+
+def test_transform_join():
+    conform = {'function': 'join', 'fields': ["NUMBER", "STREET"], 'separator': ' - '}
+    properties = {'NUMBER': '65', 'STREET': "Rideau Street"}
+    assert etl2osm.clean_field(properties, conform) == '65 - Rideau Street'
+
+
+def test_transform_suffix():
+    conform = {'function': 'suffix', 'field': "STREET"}
+    properties = {'STREET': "AVE"}
+    assert etl2osm.clean_field(properties, conform) == 'Avenue'
+
+
+def test_transform_direction():
+    conform = {'function': 'direction', 'field': "DIRECTION"}
+    properties = {'DIRECTION': "NE"}
+    assert etl2osm.clean_field(properties, conform) == 'Northeast'
+
+
+def test_transform_title():
+    conform = {'function': 'title', 'field': "NAME"}
+    properties = {'NAME': "3RD AVENUE"}
+    assert etl2osm.clean_field(properties, conform) == '3rd Avenue'
+
+
+def test_transform_mph():
+    conform = {'function': 'mph', 'field': "SPEED"}
+    properties = {'SPEED': "55"}
+    assert etl2osm.clean_field(properties, conform) == '55 mph'
+
+
+if __name__ == '__main__':
+    # test_transform_columns_basic()
+    # test_transform_regex()
+    # test_transform_regex_replace()
+    # test_transform_regex_int()
+    # test_transform_int()
+    # test_transform_float()
+    test_transform_mph()
