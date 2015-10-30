@@ -123,26 +123,120 @@ def titlecase_except(value, exceptions=cap_except):
     return ' '.join(final)
 
 
-def clean_field(value, key, sub_key=''):
-    if isinstance(value, (string_types, binary_type)):
-        value = value.strip()
+def clean_field(properties, conform):
+    true_list = ['True', 'true', '1', True, 1]
 
-    if sub_key == 'suffix':
-        if value in suffix:
-            return suffix[str(value)]
+    if 'field' in conform:
+        # STRING
+        if isinstance(conform, dict):
+            field = conform['field']
+            if field not in properties:
+                raise ValueError('Cannot find attribute [%s] using the Attribute Function.' % field)
+            value = properties[field]
 
-    elif sub_key == 'direction':
-        if value in direction:
-            return direction[str(value)]
+    # DICT
+    elif isinstance(conform, (string_types, binary_type)):
+        field = conform
+        if field not in properties:
+            raise ValueError('Cannot find attribute [%s] using the Attribute Function.' % field)
+        value = properties[field]
 
-    elif sub_key == 'title':
-        return titlecase_except(value)
+    # LIST
+    elif isinstance(conform, (list, tuple)):
+        values = []
+        for field in conform:
+            if field not in properties:
+                raise ValueError('Cannot find attribute [%s] using the Attribute Function.' % field)
+            values.append(properties[field])
+        value = ' '.join(values)
 
-    elif sub_key == 'int':
-        return str(int(value))
+    # LIST using Fields
+    elif 'fields' in conform:
+        value = []
+        for field in conform['fields']:
+            if field not in properties:
+                raise ValueError('Cannot find attribute [%s] using the Attribute Function.' % field)
+            value.append(properties[field])
+    else:
+        raise ValueError('Unknown Error - Cannot read your config file: \n %s' % conform)
 
-    elif sub_key == 'mph':
-        return '{0} mph'.format(value)
+    # Attribute Functions
+    if 'function' in conform:
+
+        # Applies a Regex function match or replace from pattern.
+        if 'regexp' in conform['function']:
+            if 'field' not in conform:
+                raise ValueError('[field] is missing using the Regex Attribute Function.')
+            if 'pattern' not in conform:
+                raise ValueError('[pattern] is missing using the Regex Attribute Function.')
+            match = re.search(conform['pattern'], properties[field])
+            value = match.group()
+            if 'replace' in conform:
+                value = properties[field].replace(value, conform['replace'])
+
+        # Applies the Join attribute function
+        elif 'join' in conform['function']:
+            if 'fields' not in conform:
+                raise ValueError('[fields] are missing using the Join Attribute Function.')
+            if 'separator' not in conform:
+                logging.warning('[separator] is missing using the Join Attribute Function.')
+            separator = conform.get('separator', ' ')
+            value = separator.join(value)
+
+        # Replaces the abreviated suffix (AVE=Avenue)
+        elif 'suffix' in conform['function']:
+            if 'field' not in conform:
+                raise ValueError('[field] is missing using the Suffix Attribute Function.')
+            if properties[field] not in suffix:
+                logging.warning('Suffix cannot be found [%s] in ETL2OSM models.' % properties[field])
+                value = ''
+            else:
+                value = suffix[str(properties[field])]
+
+        # Replaces the abreviated directions (NE=Northeast)
+        elif 'direction' in conform['function']:
+            if 'field' not in conform:
+                raise ValueError('[field] is missing using the Direction Attribute Function.')
+            if properties[field] not in direction:
+                logging.warning('Direction cannot be found [%s] in ETL2OSM models.' % properties[field])
+                value = ''
+            else:
+                value = direction[str(properties[field])]
+
+        # Converts string to a nice Titlecase (3RD AVENUE=3rd Avenue)
+        elif 'title' in conform['function']:
+            if 'field' not in conform:
+                raise ValueError('[field] is missing using the Title Attribute Function.')
+            value = titlecase_except(properties[field])
+
+        # Adds mph at the end of the integer field.
+        elif 'mph' in conform['function']:
+            if 'field' not in conform:
+                raise ValueError('[field] is missing using the Mph Attribute Function.')
+            value = '{0} mph'.format(properties[field])
+
+    # Remove any white spaces [True/False]
+    if 'strip' in conform:
+        if conform['strip'] in true_list:
+            if not isinstance(value, (string_types, binary_type)):
+                raise ValueError('Can only [strip] Attribute Function to strings or binary types.')
+            value = value.strip()
+
+    # Converts String to Integer [True/False]
+    if 'int' in conform:
+        if conform['int'] in true_list:
+            try:
+                value = int(value)
+            except:
+                logging.warning('Cannot convert [%s] to integer.' % value)
+
+    # Converts String to Integer [True/False]
+    if 'float' in conform:
+        if conform['float'] in true_list:
+            try:
+                value = float(value)
+            except:
+                logging.warning('Cannot convert [%s] to float.' % value)
 
     return value
 
@@ -152,45 +246,24 @@ def transform_fields(properties, conform):
     for key in conform.keys():
         value = None
 
+        # STRING
         # Replace only a single field
         if isinstance(conform[key], (string_types, binary_type)):
             if conform[key] in properties:
                 value = properties[conform[key]]
-                value = clean_field(value, key)
+                value = clean_field(properties, conform[key])
             fields.update(dict([(key, value)]))
 
+        # DICT
         # Replace & join multiple fields together
-        elif isinstance(conform[key], OrderedDict):
-            values = []
-            for sub_key in conform[key]:
-                if conform[key][sub_key] in properties:
-                    value = properties[conform[key][sub_key]]
-                    if value:
-                        values.append(clean_field(value, key, sub_key))
-
-            # Join all fields together to make new value
-            value = ' '.join(values)
+        elif isinstance(conform[key], (OrderedDict, dict)):
+            value = clean_field(properties, conform[key])
             fields.update(dict([(key, value)]))
 
+        # LIST
+        # Join a values from a list
         elif isinstance(conform[key], (list, tuple)):
-            values = []
-            for k in conform[key]:
-                if isinstance(k, dict):
-                    for sub_key, k in k.items():
-                        if k in properties:
-                            value = properties[k]
-                            if value:
-                                value = clean_field(value, k, sub_key)
-                                values.append(value)
-
-                elif isinstance(k, (string_types, binary_type)):
-                    if k in properties:
-                        if properties[k]:
-                            value = clean_field(properties[k], key)
-                            values.append(value)
-
-            # Join all fields together to make new value
-            value = ' '.join(values)
+            value = clean_field(properties, conform[key])
             fields.update(dict([(key, value)]))
 
     return fields
@@ -205,17 +278,4 @@ def transform_columns(feature, config):
 
 
 if __name__ == "__main__":
-    import etl2osm
-
-    feature = {
-        "type": "Feature",
-        "geometry": {
-            "type": "MultiLineString",
-            "coordinates": [
-                [[100.0, 0.0], [101.0, 1.0]],
-                [[102.0, 2.0], [103.0, 3.0]]
-            ]
-        }
-    }
-    feature2 = etl2osm.reproject(feature, 4326)
-    print(feature)
+    pass
