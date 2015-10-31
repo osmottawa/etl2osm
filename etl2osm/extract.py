@@ -23,6 +23,7 @@ class Extract(object):
             'json': self.read_geojson,
             'shp': self.read_shp,
             'kml': self.read_kml,
+            'topojson': self.read_topojson
         }
 
         # Error detection
@@ -86,11 +87,17 @@ class Extract(object):
                 for feature in source:
                     self.features.append(feature)
 
+    def read_topojson(self, infile, **kwargs):
+        """Reads a TopoJSON and gives the results in GeoJSON format"""
+
+        logging.info('Reading TopoJSON: %s' % infile)
+        raise ValueError('Reading TopoJSON not implemented')
+
     def read_kml(self, infile, **kwargs):
         """Reads a KML and gives the results in GeoJSON format"""
 
         logging.info('Reading KML: %s' % infile)
-        return ValueError('Reading KML not implemented')
+        raise ValueError('Reading KML not implemented')
 
     def read_geojson(self, infile, **kwargs):
         """Reads a GeoJSON and gives the results in GeoJSON format"""
