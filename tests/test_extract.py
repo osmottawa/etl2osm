@@ -10,7 +10,11 @@ roads = {
     'shp': os.path.join(root, "tests/shapefile/roads.shp"),
     'geojson': os.path.join(root, "tests/geojson/roads.geojson"),
     'topojson': os.path.join(root, "tests/topojson/roads.topojson"),
-    'kml': os.path.join(root, "tests/kml/roads.kml")
+    'kml': os.path.join(root, "tests/kml/roads.kml"),
+    'unknown': os.path.join(root, "tests/geojson/roads"),
+}
+lake_county = {
+    'roads': os.path.join(root, "tests/shapefile/roads_lake_county.shp")
 }
 
 wkt = 'GEOGCS["GCS_WGS_1984",DATUM["WGS_1984",SPHEROID["WGS_84",6378137,298.257223563]]'\
@@ -29,12 +33,22 @@ def test_extract_kml():
         etl2osm.extract(roads['kml'])
 
 
+def test_extract_unknown():
+    with pytest.raises(ValueError):
+        etl2osm.extract(roads['unknown'])
+
+
 def test_extract_file_extension():
     with pytest.raises(ValueError):
         etl2osm.extract("/path-not-exist.topojson")
 
     with pytest.raises(ValueError):
         etl2osm.extract("/path-not-exist.shp")
+
+
+def test_extract_lookup():
+    data = etl2osm.extract(roads['geojson'])
+    assert data[0]
 
 
 def test_extract_add():
@@ -64,6 +78,9 @@ def test_extract_shapefile():
     assert data.crs == crs
     assert len(data)
 
+    data = etl2osm.extract(lake_county['roads'])
+    assert len(data)
+
 
 def test_extract_shapefile_transform():
     data = etl2osm.extract(roads['shp'])
@@ -72,6 +89,6 @@ def test_extract_shapefile_transform():
 
 
 if __name__ == '__main__':
-    # test_extract_shapefile()
+    test_extract_shapefile()
     # test_extract_geojson()
-    test_extract_kml()
+    # test_extract_kml()
