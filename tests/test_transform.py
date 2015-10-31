@@ -1,7 +1,18 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 # -*- encoding: utf-8 -*-
 
 import etl2osm
 from collections import OrderedDict
+
+wkt = 'GEOGCS["GCS_WGS_1984",DATUM["WGS_1984",SPHEROID["WGS_84",6378137,298.257223563]]'\
+      ',PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295],AUTHORITY["EPSG","4326"]]'
+epsg = 4326
+epsg_name = 'EPSG:4326'
+crs = {
+    "type": "name",
+    "properties": {"name": 'EPSG:4326'}
+}
 
 
 def test_reproject_point():
@@ -12,7 +23,12 @@ def test_reproject_point():
             "coordinates": [100.0, 0.5]
         }
     }
-    assert etl2osm.reproject(feature, 4326) == feature
+    assert etl2osm.reproject(feature, epsg, epsg) == feature
+    assert etl2osm.reproject(feature, wkt, epsg) == feature
+    assert etl2osm.reproject(feature, wkt, wkt) == feature
+    assert etl2osm.reproject(feature, epsg, wkt) == feature
+    assert etl2osm.reproject(feature, epsg_name, wkt) == feature
+    assert etl2osm.reproject(feature, crs, crs) == feature
 
 
 def test_reproject_linestring():
@@ -23,7 +39,10 @@ def test_reproject_linestring():
             "coordinates": [[100.0, 0.0], [101.0, 1.0]]
         }
     }
-    assert etl2osm.reproject(feature, 4326) == feature
+    assert etl2osm.reproject(feature, epsg, epsg) == feature
+    assert etl2osm.reproject(feature, wkt, epsg) == feature
+    assert etl2osm.reproject(feature, wkt, wkt) == feature
+    assert etl2osm.reproject(feature, epsg, wkt) == feature
 
 
 def test_reproject_polygon():
@@ -36,7 +55,10 @@ def test_reproject_polygon():
             ]
         }
     }
-    assert etl2osm.reproject(feature, 4326) == feature
+    assert etl2osm.reproject(feature, epsg, epsg) == feature
+    assert etl2osm.reproject(feature, wkt, epsg) == feature
+    assert etl2osm.reproject(feature, wkt, wkt) == feature
+    assert etl2osm.reproject(feature, epsg, wkt) == feature
 
 
 def test_reproject_polygon_holes():
@@ -50,7 +72,10 @@ def test_reproject_polygon_holes():
             ]
         }
     }
-    assert etl2osm.reproject(feature, 4326) == feature
+    assert etl2osm.reproject(feature, epsg, epsg) == feature
+    assert etl2osm.reproject(feature, wkt, epsg) == feature
+    assert etl2osm.reproject(feature, wkt, wkt) == feature
+    assert etl2osm.reproject(feature, epsg, wkt) == feature
 
 
 def test_reproject_multi_linestring():
@@ -64,7 +89,10 @@ def test_reproject_multi_linestring():
             ]
         }
     }
-    assert etl2osm.reproject(feature, 4326) == feature
+    assert etl2osm.reproject(feature, epsg, epsg) == feature
+    assert etl2osm.reproject(feature, wkt, epsg) == feature
+    assert etl2osm.reproject(feature, wkt, wkt) == feature
+    assert etl2osm.reproject(feature, epsg, wkt) == feature
 
 
 def test_reproject_multi_point():
@@ -75,7 +103,10 @@ def test_reproject_multi_point():
             "coordinates": [[100.0, 0.0], [101.0, 1.0]]
         }
     }
-    assert etl2osm.reproject(feature, 4326) == feature
+    assert etl2osm.reproject(feature, epsg, epsg) == feature
+    assert etl2osm.reproject(feature, wkt, epsg) == feature
+    assert etl2osm.reproject(feature, wkt, wkt) == feature
+    assert etl2osm.reproject(feature, epsg, wkt) == feature
 
 
 def test_reproject_geometry_collection():
@@ -221,4 +252,4 @@ if __name__ == '__main__':
     # test_transform_regex_int()
     # test_transform_int()
     # test_transform_float()
-    test_transform_mph()
+    test_reproject_point()

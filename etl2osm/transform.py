@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from __future__ import unicode_literals
 from __future__ import absolute_import
 import os
 import re
@@ -33,12 +33,23 @@ def get_coordinate_rerefence_system(crs):
     return projection
 
 
+def extract_epsg(crs):
+    if isinstance(crs, (string_types, binary_type)):
+        crs = crs.lower()
+        if 'epsg:' in crs:
+            return int(crs.replace('epsg:', ''))
+    if isinstance(crs, dict):
+        if crs['type'] == 'name':
+            return extract_epsg(crs['properties']['name'])
+    return crs
+
+
 def reproject(feature, crs_source, crs_target=4326):
     # Source Projection
-    p1 = get_coordinate_rerefence_system(crs_source)
+    p1 = get_coordinate_rerefence_system(extract_epsg(crs_source))
 
     # Output Projection (WGS84)
-    p2 = get_coordinate_rerefence_system(crs_target)
+    p2 = get_coordinate_rerefence_system(extract_epsg(crs_target))
 
     geom = feature['geometry']
     coord = feature['geometry']['coordinates']

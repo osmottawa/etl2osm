@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
 from __future__ import absolute_import
 import os
 import logging
 import fiona
 from fiona.crs import from_epsg
-from etl2osm.transform import reproject, transform_columns, read_config
+from etl2osm.transform import read_config
 
 
 class Load(object):
@@ -50,9 +51,6 @@ class Load(object):
 
         with fiona.open(outfile, 'w', driver=driver, schema=schema, crs=crs, encoding=encoding) as sink:
             for feature in data:
-                # Reproject data to WGS84 before saving
-                feature = reproject(feature, data.crs_wkt, 4326)
-                feature = transform_columns(feature, config)
                 sink.write(feature)
 
     def write_osm(self, data, outfile, config, **kwargs):

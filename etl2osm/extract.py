@@ -1,22 +1,26 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
 from __future__ import absolute_import
 import logging
 import os
 import fiona
+import json
+from etl2osm.transform import reproject, transform_columns, read_config
 
 
 class Extract(object):
     def __init__(self, infile, **kwargs):
         # Reset Values
-        self.geojson = []
-        self.crs = ''
-        self.crs_wkt = ''
+        self.features = []
+        self.wkt = ''
+        self.epsg = ''
         extension = os.path.splitext(infile)[1][1:]
 
         read_file = {
             'osm': self.read_osm,
             'geojson': self.read_geojson,
+            'json': self.read_geojson,
             'shp': self.read_shp,
             'kml': self.read_kml,
         }
@@ -31,22 +35,37 @@ class Extract(object):
         read_file[extension](infile, **kwargs)
 
     def __len__(self):
-        return len(self.geojson)
+        return len(self.features)
 
     def __iter__(self):
-        for feature in self.geojson:
+        for feature in self.features:
             yield feature
 
     def __add__(self, data):
         for feature in data:
-            self.geojson.append(feature)
+            self.features.append(feature)
         return self
 
     def __repr__(self):
         return '<Data [%i]>' % len(self)
 
     def __getitem__(self, lookup):
-        return self.geojson[lookup]
+        return self.features[lookup]
+
+    @property
+    def crs(self):
+        if self.epsg:
+            return {"type": "name", "properties": {"name": self.epsg}}
+
+        elif self.wkt:
+            return {"type": "name", "properties": {"name": self.wkt}}
+
+        elif self._crs:
+            return self._crs
+
+    @property
+    def geojson(self):
+        return {"type": "FeatureCollection", "crs": self.crs, "features": self.features}
 
     def read_shp(self, infile, **kwargs):
         """Reads a Shapefile and gives the results in GeoJSON format"""
@@ -57,10 +76,15 @@ class Extract(object):
             with fiona.open(infile) as source:
                 self.meta = source.meta
                 self.schema = source.meta['schema']
-                self.crs = source.meta['crs']
-                self.crs_wkt = source.meta['crs_wkt']
+                self.wkt = source.meta['crs_wkt']
+
+                # Read EPSG
+                crs = source.meta['crs']
+                if 'init' in crs:
+                    self.epsg = crs['init'].upper()
+
                 for feature in source:
-                    self.geojson.append(feature)
+                    self.features.append(feature)
 
     def read_kml(self, infile, **kwargs):
         """Reads a KML and gives the results in GeoJSON format"""
@@ -72,7 +96,22 @@ class Extract(object):
         """Reads a GeoJSON and gives the results in GeoJSON format"""
 
         logging.info('Reading GeoJSON: %s' % infile)
-        return ValueError('Reading GeoJSON not implemented')
+
+        with open(infile) as f:
+            geojson = json.load(f)
+
+            if 'type' not in geojson:
+                raise ValueError('GeoJSON must contain a [type] "FeatureCollection" or "Feature"')
+            if 'crs' not in geojson:
+                logging.warning('Coordinate Reference System was not detected (default=EPSG:4326)')
+                self.epsg = 'EPSG:4326'
+            else:
+                self._crs = geojson['crs']
+
+            # Read Feature Collection
+            if geojson['type'] == 'FeatureCollection':
+                for feature in geojson['features']:
+                    self.features.append(feature)
 
     def read_osm(self, infile, **kwargs):
         """Reads a OSM and gives the results in GeoJSON format"""
@@ -80,8 +119,16 @@ class Extract(object):
         logging.info('Reading OSM: %s' % infile)
         return ValueError('Reading OSM not implemented')
 
-    def transform(self):
-        pass
+    def transform(self, config={}):
+        """ Transform the data using the config file """
+
+        config = read_config(config)
+
+        for feature in self.features:
+            pass
+            # Reproject data to WGS84 before saving
+            # feature = reproject(feature, data.crs_wkt, 4326)
+            # feature = transform_columns(feature, config)
 
     def load(self):
         pass
