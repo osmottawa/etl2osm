@@ -11,6 +11,7 @@ roads = {
     'geojson': os.path.join(root, "tests/geojson/roads.geojson"),
     'topojson': os.path.join(root, "tests/topojson/roads.topojson"),
     'kml': os.path.join(root, "tests/kml/roads.kml"),
+    'osm': os.path.join(root, "tests/osm/roads.osm"),
     'unknown': os.path.join(root, "tests/geojson/roads"),
 }
 lake_county = {
@@ -31,6 +32,11 @@ def test_extract_topojson():
 def test_extract_kml():
     with pytest.raises(ValueError):
         etl2osm.extract(roads['kml'])
+
+
+def test_extract_osm():
+    with pytest.raises(ValueError):
+        etl2osm.extract(roads['osm'])
 
 
 def test_extract_unknown():
@@ -62,12 +68,7 @@ def test_extract_add():
 def test_extract_geojson():
     data = etl2osm.extract(roads['geojson'])
     assert data.crs == crs
-    assert len(data)
-
-
-def test_extract_geojson_transform():
-    data = etl2osm.extract(roads['geojson'])
-    data.transform()
+    assert data.geojson
     assert len(data)
 
 
@@ -76,15 +77,13 @@ def test_extract_shapefile():
     assert data.wkt == wkt
     assert data.epsg == epsg
     assert data.crs == crs
+    assert data.geojson
     assert len(data)
 
+
+def test_extract_lake_county_roads():
     data = etl2osm.extract(lake_county['roads'])
-    assert len(data)
-
-
-def test_extract_shapefile_transform():
-    data = etl2osm.extract(roads['shp'])
-    data.transform()
+    assert data.geojson
     assert len(data)
 
 

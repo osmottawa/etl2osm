@@ -87,18 +87,6 @@ class Extract(object):
                 for feature in source:
                     self.features.append(feature)
 
-    def read_topojson(self, infile, **kwargs):
-        """Reads a TopoJSON and gives the results in GeoJSON format"""
-
-        logging.info('Reading TopoJSON: %s' % infile)
-        raise ValueError('Reading TopoJSON not implemented')
-
-    def read_kml(self, infile, **kwargs):
-        """Reads a KML and gives the results in GeoJSON format"""
-
-        logging.info('Reading KML: %s' % infile)
-        raise ValueError('Reading KML not implemented')
-
     def read_geojson(self, infile, **kwargs):
         """Reads a GeoJSON and gives the results in GeoJSON format"""
 
@@ -120,11 +108,23 @@ class Extract(object):
                 for feature in geojson['features']:
                     self.features.append(feature)
 
+    def read_topojson(self, infile, **kwargs):
+        """Reads a TopoJSON and gives the results in GeoJSON format"""
+
+        logging.info('Reading TopoJSON: %s' % infile)
+        raise ValueError('Reading TopoJSON not implemented')
+
+    def read_kml(self, infile, **kwargs):
+        """Reads a KML and gives the results in GeoJSON format"""
+
+        logging.info('Reading KML: %s' % infile)
+        raise ValueError('Reading KML not implemented')
+
     def read_osm(self, infile, **kwargs):
         """Reads a OSM and gives the results in GeoJSON format"""
 
         logging.info('Reading OSM: %s' % infile)
-        return ValueError('Reading OSM not implemented')
+        raise ValueError('Reading OSM not implemented')
 
     def transform(self, config={}):
         """ Transform the data using the config file """
@@ -136,12 +136,6 @@ class Extract(object):
             # Reproject data to WGS84 before saving
             # feature = reproject(feature, data.crs_wkt, 4326)
             # feature = transform_columns(feature, config)
-
-    def load(self):
-        pass
-
-    def save(self):
-        pass
 
 
 if __name__ == '__main__':
