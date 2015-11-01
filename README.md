@@ -38,10 +38,9 @@ Step by Step doing a typical `Extract Transform Load` processing.
 Doing the entire process in a single line
 
 ```python
-
 >>> import etl2osm
 >>> etl2osm.process("infile.shp", "config.json", "outfile.osm")
-
+```
 
 Command Line Interface
 ----------------------
