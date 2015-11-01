@@ -9,3 +9,4 @@ click==5.1
 cligj==0.3.0              # via fiona
 fiona==1.6.2
 six==1.10.0
+lxml==3.4.4
