@@ -244,8 +244,12 @@ def test_transform_geojson():
 
 def test_transform_geojson_config():
     data = etl2osm.extract(roads['lake_county'])
+    assert data[0]['properties']['FullStreet'] == u'LENZE DR'
+    assert data[0]['properties']['NumberOfLa'] == u'2'
+
     data.transform(config['lake_county']['roads'])
-    print data[0]
+    assert data[0]['properties']['street'] == 'Lenze Drive'
+    assert data[0]['properties']['lanes'] == 2
     assert data.epsg == 'EPSG:4326'
 
 

@@ -198,21 +198,21 @@ def clean_field(properties, conform):
         elif 'suffix' in conform['function']:
             if 'field' not in conform:
                 raise ValueError('[field] is missing using the Suffix Attribute Function.')
-            if properties[field] not in suffix:
-                logging.warning('Suffix cannot be found [%s] in ETL2OSM models.' % properties[field])
-                value = ''
-            else:
-                value = suffix[str(properties[field])]
+            if properties[field]:
+                if properties[field] not in suffix:
+                    logging.warning('Suffix cannot be found [%s] in ETL2OSM models.' % properties[field])
+                else:
+                    value = suffix[str(properties[field])]
 
         # Replaces the abreviated directions (NE=Northeast)
         elif 'direction' in conform['function']:
             if 'field' not in conform:
                 raise ValueError('[field] is missing using the Direction Attribute Function.')
-            if properties[field] not in direction:
-                logging.warning('Direction cannot be found [%s] in ETL2OSM models.' % properties[field])
-                value = ''
-            else:
-                value = direction[str(properties[field])]
+            if properties[field]:
+                if properties[field] not in direction:
+                    logging.warning('Direction cannot be found [%s] in ETL2OSM models.' % properties[field])
+                else:
+                    value = direction[str(properties[field])]
 
         # Converts string to a nice Titlecase (3RD AVENUE=3rd Avenue)
         elif 'title' in conform['function']:
