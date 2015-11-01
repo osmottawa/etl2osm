@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 import etl2osm
 import pytest
 from test_variables import roads, crs

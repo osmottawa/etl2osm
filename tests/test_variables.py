@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 import os
 import etl2osm
 from osgeo import osr
@@ -19,6 +18,8 @@ roads = {
     'lake_county': os.path.join(root, "tests/shapefile/roads_lake_county.shp")
 }
 config = {
+    'no-conform': os.path.join(root, "tests/config/no-conform.json"),
+    'numbers': os.path.join(root, "tests/config/numbers.json"),
     'lake_county': {
         'roads': os.path.join(root, "examples/roads/lake_county.json"),
         'address': os.path.join(root, "examples/addresses/lake_county.json")

@@ -1,8 +1,22 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 import os
 import etl2osm
+import pytest
 from test_variables import config, roads
+
+
+def test_load_kml():
+    outfile = 'tmp-file.kml'
+    data = etl2osm.extract(roads['geojson'])
+    with pytest.raises(ValueError):
+        data.save(outfile)
+
+
+def test_load_osm():
+    outfile = 'tmp-file.osm'
+    data = etl2osm.extract(roads['geojson'])
+    with pytest.raises(ValueError):
+        data.save(outfile)
 
 
 def test_load_geojson():
@@ -29,4 +43,5 @@ def test_load_shapefile():
 
 if __name__ == '__main__':
     # test_load_geojson()
-    test_load_shapefile()
+    test_load_osm()
+    test_load_kml()

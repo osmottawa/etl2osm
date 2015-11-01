@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 import os
 import etl2osm
 from test_variables import config, roads

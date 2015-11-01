@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 import etl2osm
+import pytest
 from collections import OrderedDict
 from test_variables import wkt, epsg, crs, roads, config
 
@@ -254,11 +254,14 @@ def test_transform_geojson_config():
 
 
 def test_transform_config_to_properties():
-    properties = etl2osm.config_to_properties(config['lake_county']['roads'])
+    properties = etl2osm.config_to_properties(config['numbers'])
     assert properties
-    assert properties['street'] == 'str'
-    assert properties['lanes'] == 'int'
-    assert properties['oneway'] == 'str'
+    assert properties['str'] == 'str'
+    assert properties['int'] == 'int'
+    assert properties['float'] == 'float'
+
+    with pytest.raises(ValueError):
+        etl2osm.config_to_properties(config['no-conform'])
 
 if __name__ == '__main__':
     # test_transform_columns_basic()
