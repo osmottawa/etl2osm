@@ -19,12 +19,12 @@
     "license": "Public Domain",
     "conform": {
         "street": [
-            {"direction": "PrefixDire"},
+            {"function": "direction", "field": "PrefixDire"},
             "PrefixType",
-            {"title": "BaseStreet"},
-            {"suffix": "SuffixType"}
+            {"function": "title", "field": "BaseStreet"},
+            {"function": "suffix", "field": "SuffixType"}
         ],
-        "lanes": "NumberOfLa",
+        "lanes": {"int": "True", "field": "NumberOfLa"},
         "oneway": "Oneway"
     }
 }

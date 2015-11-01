@@ -1,18 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-# -*- encoding: utf-8 -*-
-
 import etl2osm
 from collections import OrderedDict
-
-wkt = 'GEOGCS["GCS_WGS_1984",DATUM["WGS_1984",SPHEROID["WGS_84",6378137,298.257223563]]'\
-      ',PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295],AUTHORITY["EPSG","4326"]]'
-epsg = 4326
-epsg_name = 'EPSG:4326'
-crs = {
-    "type": "name",
-    "properties": {"name": 'EPSG:4326'}
-}
+from test_variables import wkt, epsg, crs, roads, config
 
 
 def test_reproject_point():
@@ -27,7 +17,8 @@ def test_reproject_point():
     assert etl2osm.reproject(feature, wkt, epsg) == feature
     assert etl2osm.reproject(feature, wkt, wkt) == feature
     assert etl2osm.reproject(feature, epsg, wkt) == feature
-    assert etl2osm.reproject(feature, epsg_name, wkt) == feature
+    assert etl2osm.reproject(feature, crs, epsg) == feature
+    assert etl2osm.reproject(feature, crs, wkt) == feature
     assert etl2osm.reproject(feature, crs, crs) == feature
 
 
@@ -245,6 +236,19 @@ def test_transform_mph():
     assert etl2osm.clean_field(properties, conform) == '55 mph'
 
 
+def test_transform_geojson():
+    data = etl2osm.extract(roads['lake_county'])
+    data.transform()
+    assert data.epsg == 'EPSG:4326'
+
+
+def test_transform_geojson_config():
+    data = etl2osm.extract(roads['lake_county'])
+    data.transform(config['lake_county']['roads'])
+    print data[0]
+    assert data.epsg == 'EPSG:4326'
+
+
 if __name__ == '__main__':
     # test_transform_columns_basic()
     # test_transform_regex()
@@ -252,4 +256,4 @@ if __name__ == '__main__':
     # test_transform_regex_int()
     # test_transform_int()
     # test_transform_float()
-    test_reproject_point()
+    test_transform_geojson_config()

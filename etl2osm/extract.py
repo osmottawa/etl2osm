@@ -6,7 +6,8 @@ import logging
 import os
 import fiona
 import json
-from etl2osm.transform import reproject, transform_columns, read_config
+from etl2osm.transform import reproject, transform_columns, read_config, extract_epsg
+from osgeo import osr
 
 
 class Extract(object):
@@ -50,8 +51,12 @@ class Extract(object):
     def __repr__(self):
         return '<Data [%i]>' % len(self)
 
-    def __getitem__(self, lookup):
-        return self.features[lookup]
+    def __setitem__(self, key, value):
+        self.features[key] = value
+        return value
+
+    def __getitem__(self, key):
+        return self.features[key]
 
     @property
     def crs(self):
@@ -60,9 +65,6 @@ class Extract(object):
 
         elif self.wkt:
             return {"type": "name", "properties": {"name": self.wkt}}
-
-        elif self._crs:
-            return self._crs
 
     @property
     def geojson(self):
@@ -101,7 +103,7 @@ class Extract(object):
                 logging.warning('Coordinate Reference System was not detected (default=EPSG:4326)')
                 self.epsg = 'EPSG:4326'
             else:
-                self._crs = geojson['crs']
+                self.epsg = 'EPSG:{0}'.format(extract_epsg(geojson['crs']))
 
             # Read Feature Collection
             if geojson['type'] == 'FeatureCollection':
@@ -131,11 +133,20 @@ class Extract(object):
 
         config = read_config(config)
 
-        for feature in self.features:
-            pass
-            # Reproject data to WGS84 before saving
-            # feature = reproject(feature, data.crs_wkt, 4326)
-            # feature = transform_columns(feature, config)
+        for x, feature in enumerate(self.features):
+            # Reproject data to WGS84
+            if not self.epsg == 'ESPG:4326':
+                feature = reproject(feature, self.crs, osr.SRS_WKT_WGS84)
+
+            # Transform Columns
+            if config:
+                feature = transform_columns(feature, config)
+
+            # Save feature to self
+            self[x] = feature
+
+        self.epsg = 'EPSG:4326'
+        self.wkt = osr.SRS_WKT_WGS84
 
 
 if __name__ == '__main__':

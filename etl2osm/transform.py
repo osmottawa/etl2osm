@@ -156,9 +156,9 @@ def clean_field(properties, conform):
     elif isinstance(conform, (list, tuple)):
         values = []
         for field in conform:
-            if field not in properties:
-                raise ValueError('Cannot find attribute [%s] using the Attribute Function.' % field)
-            values.append(properties[field])
+            value = clean_field(properties, field)
+            if value:
+                values.append(value)
         value = ' '.join(values)
 
     # LIST using Fields
