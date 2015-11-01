@@ -95,11 +95,12 @@ Installation
 
 ### GDAL & Fiona
 
-ETL2OSM depends on GDAL & Fiona, to install those packages using Windows.
+ETL2OSM depends on GDAL, Fiona & LXML; to install those packages using Windows.
 Download the appropriate library from [Unofficial Windows Binaries for Python Extension Packages](http://www.lfd.uci.edu/~gohlke/pythonlibs/) matching your Python version (Python27/34) & 64/32bit.
 
 ```bash
 $ cd packages
+$ pip install lxml‑3.4.4‑cp27‑none‑win32.whl
 $ pip install Fiona-1.6.2-cp27-none-win32.whl
 $ pip install GDAL-1.11.3-cp27-none-win32.whl
 ```
