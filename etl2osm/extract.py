@@ -86,7 +86,11 @@ class Extract(Load):
                     self.epsg = crs['init'].upper()
 
                 for feature in source:
-                    self.features.append(feature)
+                    if feature:
+                        if feature['geometry']:
+                            self.features.append(feature)
+                        else:
+                            logging.warning('Could not find [geometry] in feature.')
 
     def read_geojson(self, infile, **kwargs):
         """Reads a GeoJSON and gives the results in GeoJSON format"""
