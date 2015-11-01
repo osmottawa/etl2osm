@@ -34,24 +34,19 @@ Step by Step doing a typical `Extract Transform Load` processing.
 .. code-block:: python
 
     import etl2osm
-
-    data = etl2osm.extract(infile)
-    data.transform(config)
-    data.save(outfile)
+    
+    data = etl2osm.extract("infile.shp")
+    data.transform()
+    data.save("outfile.osm")
 
 
 Doing the entire process in a single line
 
 .. code-block:: python
 
-    etl2osm.process(infile, config, outfile)
-
-
-To see what's happening, you can turn on the `Debug` mode.
-
-.. code-block:: python
-
-    etl2osm.process(infile, config, outfile, debug=True)
+    import etl2osm
+    
+    etl2osm.process("infile.shp", "config.json", "outfile.osm")
 
 
 Command Line Interface
@@ -61,38 +56,9 @@ Reading the a file, the standard output will be in a GeoJSON format.
 
 .. code-block:: bash
 
-    $ etl2osm infile.shp --outfile outfile.osm --config config.json
+    $ etl2osm infile.shp --config config.json --outfile outfile.osm
 
-
-Read & Transform the file using the config file.
-
-.. code-block:: bash
-
-    $ etl2osm infile.shp --config config.json
-
-
-Entire process of `Extract Transform Load` to an OpenStreetMap format.
-
-.. code-block:: bash
-
-    $ etl2osm infile.shp --outfile outfile.osm --config config.json
-
-
-Doing this process on multiple files using the `*` in your input file path.
-
-Finds all the files starting with 2015 and ends with .kml
-
-.. code-block:: bash
-
-    $ etl2osm folder/2015*.shp --config config.json --format osm
-
-
-To see what's happening, you can turn on the `Debug` mode.
-
-.. code-block:: bash
-
-    $ etl2osm infile.shp --debug
-
+See [Examples](https://github.com/osmottawa/etl2osm/tree/master/examples) for more information.
 
 Making a Config.json
 --------------------
@@ -130,7 +96,6 @@ Address Data
         "unit": "UNIT"
     }
 }
-
 
 
 Installation
