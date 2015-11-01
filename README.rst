@@ -36,7 +36,7 @@ Step by Step doing a typical `Extract Transform Load` processing.
     import etl2osm
     
     data = etl2osm.extract("infile.shp")
-    data.transform()
+    data.transform("config.json")
     data.save("outfile.osm")
 
 
