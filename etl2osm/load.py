@@ -5,6 +5,7 @@ import json
 import logging
 import fiona
 from fiona.crs import from_epsg
+from lxml import etree
 
 
 class Load(object):
@@ -36,18 +37,6 @@ class Load(object):
             for feature in self.features:
                 sink.write(feature)
 
-    def write_osm(self, outfile):
-        """ Writes data to OSM format """
-
-        logging.info('Writing OSM: %s' % outfile)
-        raise ValueError('Writing OSM not implemented')
-
-    def write_kml(self, outfile):
-        """ Writes data to KML format """
-
-        logging.info('Writing KML: %s' % outfile)
-        raise ValueError('Writing KML not implemented')
-
     def write_geojson(self, outfile):
         """ Writes data to GeoJSON format """
 
@@ -55,3 +44,69 @@ class Load(object):
 
         with open(outfile, 'wb') as f:
             f.write(json.dumps(self.geojson, indent=4))
+
+    def write_osm(self, outfile):
+        """ Writes data to OSM format """
+
+        logging.info('Writing OSM: %s' % outfile)
+        osm = etree.Element("osm", version="0.6", upload="false", generator="etl2osm")
+        osm_id = -1
+
+        for feature in self.features:
+            geometry = feature['geometry']
+            coordinates = geometry['coordinates']
+
+            # Handle Node
+            if geometry['type'] == 'Point':
+                osm_id -= 1
+                node = etree.Element(
+                    "node",
+                    id=str(osm_id),
+                    action='modify',
+                    visible='true',
+                    lat=str(coordinates[1]),
+                    lon=str(coordinates[0]),
+                )
+                # Add tag attributes to node
+                for key, value in feature['properties'].items():
+                    etree.SubElement(node, "tag", k=key, v=str(value))
+
+                # Add node to OSM
+                osm.append(node)
+
+            # Handle Way
+            if geometry['type'] == 'LineString':
+                osm_id -= 1
+                way = etree.Element(
+                    "way",
+                    id=str(osm_id),
+                    action='modify',
+                    visible='true',
+                )
+
+                # Add tag attributes to way
+                for key, value in feature['properties'].items():
+                    etree.SubElement(way, "tag", k=key, v=str(value))
+
+                # Get Refence Nodes
+                for coordinate in feature["geometry"]["coordinates"]:
+                    osm_id -= 1
+                    etree.SubElement(
+                        osm,
+                        "node",
+                        id=str(osm_id),
+                        visible='true',
+                        lon=str(coordinate[0]),
+                        lat=str(coordinate[1])
+                    )
+                    etree.SubElement(way, "nd", ref=str(osm_id))
+                osm.append(way)
+
+        with open(outfile, 'wb') as f:
+            f.write(etree.tostring(osm, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
+
+    def write_kml(self, outfile):
+        """ Writes data to KML format """
+
+        logging.info('Writing KML: %s' % outfile)
+        raise ValueError('Writing KML not implemented')

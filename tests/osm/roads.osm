@@ -1,38 +1,41 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <osm version='0.6' upload='false' generator='JOSM'>
-  <node id='-22' visible='true' lat='45.40785099171' lon='-75.69573640823' />
-  <node id='-21' visible='true' lat='45.41990128712' lon='-75.70595026016' />
-  <node id='-18' visible='true' lat='45.42086519967' lon='-75.70395469666' />
-  <node id='-17' visible='true' lat='45.40861927477' lon='-75.69350481033' />
-  <node id='-14' visible='true' lat='45.37289059439' lon='-75.74867248535' />
-  <node id='-13' visible='true' lat='45.37988440382' lon='-75.74077606201' />
-  <node id='-12' visible='true' lat='45.39362833594' lon='-75.7311630249' />
-  <node id='-11' visible='true' lat='45.40158382192' lon='-75.71880340576' />
-  <node id='-10' visible='true' lat='45.40881510996' lon='-75.69065093994' />
-  <node id='-9' visible='true' lat='45.41676845767' lon='-75.66833496094' />
-  <node id='-8' visible='true' lat='45.41941932467' lon='-75.63228607178' />
-  <way id='-23' action='modify' visible='true'>
-    <nd ref='-21' />
-    <nd ref='-22' />
-    <tag k='basename' v='Lyon' />
-    <tag k='direction' v='N' />
-    <tag k='suffix' v='ST' />
+  <node id='-224' action='modify' visible='true' lat='45.39993057264' lon='-75.69407709213'>
+    <tag k='amenity' v='school' />
+  </node>
+  <node id='-217' visible='true' lat='45.41941932467' lon='-75.63228607178' />
+  <node id='-215' visible='true' lat='45.41676845767' lon='-75.66833496094' />
+  <node id='-213' visible='true' lat='45.40881510996' lon='-75.69065093994' />
+  <node id='-211' visible='true' lat='45.40158382192' lon='-75.71880340576' />
+  <node id='-209' visible='true' lat='45.39362833594' lon='-75.7311630249' />
+  <node id='-207' visible='true' lat='45.37988440382' lon='-75.74077606201' />
+  <node id='-205' visible='true' lat='45.37289059439' lon='-75.74867248535' />
+  <node id='-203' visible='true' lat='45.40861927477' lon='-75.69350481033' />
+  <node id='-201' visible='true' lat='45.42086519967' lon='-75.70395469666' />
+  <node id='-199' visible='true' lat='45.41990128712' lon='-75.70595026016' />
+  <node id='-197' visible='true' lat='45.40785099171' lon='-75.69573640823' />
+  <way id='-223' action='modify' visible='true'>
+    <nd ref='-217' />
+    <nd ref='-215' />
+    <nd ref='-213' />
+    <nd ref='-211' />
+    <nd ref='-209' />
+    <nd ref='-207' />
+    <nd ref='-205' />
+    <tag k='basename' v='417' />
+    <tag k='prefix' v='HWY' />
   </way>
-  <way id='-19' action='modify' visible='true'>
-    <nd ref='-17' />
-    <nd ref='-18' />
+  <way id='-221' action='modify' visible='true'>
+    <nd ref='-203' />
+    <nd ref='-201' />
     <tag k='basename' v='KENT' />
     <tag k='suffix' v='ST' />
   </way>
-  <way id='-15' action='modify' visible='true'>
-    <nd ref='-8' />
-    <nd ref='-9' />
-    <nd ref='-10' />
-    <nd ref='-11' />
-    <nd ref='-12' />
-    <nd ref='-13' />
-    <nd ref='-14' />
-    <tag k='basename' v='417' />
-    <tag k='prefix' v='HWY' />
+  <way id='-219' action='modify' visible='true'>
+    <nd ref='-199' />
+    <nd ref='-197' />
+    <tag k='basename' v='Lyon' />
+    <tag k='direction' v='N' />
+    <tag k='suffix' v='ST' />
   </way>
 </osm>

@@ -7,92 +7,84 @@
     "features": [
         {
             "geometry": {
-                "type": "LineString", 
+                "type": "LineString",
                 "coordinates": [
                     [
-                        -75.63228607177734, 
+                        -75.63228607177734,
                         45.419419324671495
-                    ], 
+                    ],
                     [
-                        -75.6683349609375, 
+                        -75.6683349609375,
                         45.41676845766787
-                    ], 
+                    ],
                     [
-                        -75.69065093994139, 
+                        -75.69065093994139,
                         45.40881510996139
-                    ], 
+                    ],
                     [
-                        -75.71880340576172, 
+                        -75.71880340576172,
                         45.40158382192322
-                    ], 
+                    ],
                     [
-                        -75.73116302490234, 
+                        -75.73116302490234,
                         45.39362833594161
-                    ], 
+                    ],
                     [
-                        -75.74077606201172, 
+                        -75.74077606201172,
                         45.37988440382442
-                    ], 
+                    ],
                     [
-                        -75.74867248535156, 
+                        -75.74867248535156,
                         45.3728905943899
                     ]
                 ]
-            }, 
-            "type": "Feature", 
+            },
+            "type": "Feature",
             "properties": {
-                "stroke": "#555555", 
-                "stroke-width": 2, 
-                "prefix": "HWY", 
-                "stroke-opacity": 1, 
+                "stroke": "#555555",
+                "prefix": "HWY",
                 "basename": 417
             }
-        }, 
+        },
         {
             "geometry": {
-                "type": "LineString", 
+                "type": "LineString",
                 "coordinates": [
                     [
-                        -75.69350481033325, 
+                        -75.69350481033325,
                         45.40861927477253
-                    ], 
+                    ],
                     [
-                        -75.70395469665527, 
+                        -75.70395469665527,
                         45.42086519967429
                     ]
                 ]
-            }, 
-            "type": "Feature", 
+            },
+            "type": "Feature",
             "properties": {
-                "stroke": "#555555", 
-                "stroke-width": 2, 
-                "suffix": "ST", 
-                "stroke-opacity": 1, 
+                "suffix": "ST",
                 "basename": "KENT"
             }
-        }, 
+        },
         {
             "geometry": {
-                "type": "LineString", 
+                "type": "LineString",
                 "coordinates": [
                     [
-                        -75.70595026016235, 
+                        -75.70595026016235,
                         45.41990128711978
-                    ], 
+                    ],
                     [
-                        -75.69573640823364, 
+                        -75.69573640823364,
                         45.407850991705544
                     ]
                 ]
-            }, 
-            "type": "Feature", 
+            },
+            "type": "Feature",
             "properties": {
-                "direction": "N", 
-                "suffix": "ST", 
-                "stroke-opacity": 1, 
-                "basename": "Lyon", 
-                "stroke": "#555555", 
-                "stroke-width": 2
+                "direction": "N",
+                "suffix": "ST",
+                "basename": "Lyon"
             }
         }
     ]

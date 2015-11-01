@@ -2,7 +2,7 @@
 import os
 import etl2osm
 import pytest
-from test_variables import config, roads
+from test_variables import config, roads, addresses
 
 
 def test_load_kml():
@@ -15,8 +15,14 @@ def test_load_kml():
 def test_load_osm():
     outfile = 'tmp-file.osm'
     data = etl2osm.extract(roads['geojson'])
-    with pytest.raises(ValueError):
-        data.save(outfile)
+    data.save(outfile)
+    assert os.path.exists(outfile)
+    os.remove(outfile)
+
+    data = etl2osm.extract(addresses['geojson'])
+    data.save(outfile)
+    assert os.path.exists(outfile)
+    os.remove(outfile)
 
 
 def test_load_geojson():

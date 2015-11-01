@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+                                                                                
+"features": [
+{ "type": "Feature", "properties": { "SADD": "2406 AMBLER CIR", "PREDIR": null, "NUMBER_": 2406.000000, "ST_NAME": "AMBLER", "STSUFFIX": "CIR", "POSTDIR": null, "UNITTYPE": null, "UNITNUM": 0.000000, "UNIT": null, "LOT": "96", "CITY": "LL62", "MAILCITY": null, "ZIP": 0.000000, "ZIP_CODES": 32162.000000, "OLD_ADDRES": null, "STRUC_TYPE": "SFH", "NOTES": null, "TYPE": 10, "JURISDICTI": null, "SOURCE": "GIS", "DATE_": "2006\/03\/27", "ST_EXT": "CIR", "LASTEDITOR": null, "LASTUPDATE": null, "ADD_TYP": "Residential" }, "geometry": { "type": "Point", "coordinates": [ -82.012692178129825, 28.919381383359497 ] } },
+{ "type": "Feature", "properties": { "SADD": "13620 CR 109", "PREDIR": null, "NUMBER_": 13620.000000, "ST_NAME": "CR 109", "STSUFFIX": null, "POSTDIR": null, "UNITTYPE": null, "UNITNUM": 0.000000, "UNIT": null, "LOT": null, "CITY": "LADY", "MAILCITY": null, "ZIP": 0.000000, "ZIP_CODES": 32159.000000, "OLD_ADDRES": null, "STRUC_TYPE": null, "NOTES": null, "TYPE": 10, "JURISDICTI": null, "SOURCE": "GIS", "DATE_": "1999\/06\/02", "ST_EXT": null, "LASTEDITOR": null, "LASTUPDATE": null, "ADD_TYP": "Residential" }, "geometry": { "type": "Point", "coordinates": [ -81.975211940652599, 28.954458255332323 ] } },
+{ "type": "Feature", "properties": { "SADD": "1873 HARTFORD PATH", "PREDIR": null, "NUMBER_": 1873.000000, "ST_NAME": "HARTFORD", "STSUFFIX": "PATH", "POSTDIR": null, "UNITTYPE": null, "UNITNUM": 0.000000, "UNIT": null, "LOT": "113", "CITY": "LL62", "MAILCITY": null, "ZIP": 0.000000, "ZIP_CODES": 32162.000000, "OLD_ADDRES": null, "STRUC_TYPE": "SFH", "NOTES": null, "TYPE": 10, "JURISDICTI": null, "SOURCE": "GIS", "DATE_": "2006\/04\/21", "ST_EXT": "PATH", "LASTEDITOR": null, "LASTUPDATE": null, "ADD_TYP": "Residential" }, "geometry": { "type": "Point", "coordinates": [ -81.998959476461209, 28.912094595881506 ] } }
+]
+}

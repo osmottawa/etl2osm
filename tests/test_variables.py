@@ -17,6 +17,11 @@ roads = {
     'unknown': os.path.join(root, "tests/geojson/roads"),
     'lake_county': os.path.join(root, "tests/shapefile/roads_lake_county.shp")
 }
+
+addresses = {
+    'geojson': os.path.join(root, "tests/geojson/addresses.geojson"),
+}
+
 config = {
     'no-conform': os.path.join(root, "tests/config/no-conform.json"),
     'numbers': os.path.join(root, "tests/config/numbers.json"),

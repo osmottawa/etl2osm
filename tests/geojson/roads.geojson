@@ -41,10 +41,7 @@
             },
             "type": "Feature",
             "properties": {
-                "stroke": "#555555",
-                "stroke-width": 2,
                 "prefix": "HWY",
-                "stroke-opacity": 1,
                 "basename": 417
             }
         },
@@ -64,10 +61,7 @@
             },
             "type": "Feature",
             "properties": {
-                "stroke": "#555555",
-                "stroke-width": 2,
                 "suffix": "ST",
-                "stroke-opacity": 1,
                 "basename": "KENT"
             }
         },
@@ -89,10 +83,7 @@
             "properties": {
                 "direction": "N",
                 "suffix": "ST",
-                "stroke-opacity": 1,
-                "basename": "Lyon",
-                "stroke": "#555555",
-                "stroke-width": 2
+                "basename": "Lyon"
             }
         }
     ]
