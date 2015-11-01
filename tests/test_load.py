@@ -2,7 +2,15 @@
 import os
 import etl2osm
 import pytest
-from test_variables import config, roads, addresses
+from test_variables import config, roads, addresses, test_file
+
+
+def test_overlapping_osm_nodes():
+    outfile = 'tmp-file.osm'
+    data = etl2osm.extract(test_file('tests/geojson/overlapping.geojson'))
+    data.save(outfile)
+    assert os.path.exists(outfile)
+    os.remove(outfile)
 
 
 def test_load_kml():
@@ -49,5 +57,6 @@ def test_load_shapefile():
 
 if __name__ == '__main__':
     # test_load_geojson()
-    test_load_osm()
-    test_load_kml()
+    # test_load_osm()
+    # test_load_kml()
+    test_overlapping_osm_nodes()

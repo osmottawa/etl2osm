@@ -51,6 +51,7 @@ class Load(object):
         logging.info('Writing OSM: %s' % outfile)
         osm = etree.Element("osm", version="0.6", upload="false", generator="etl2osm")
         osm_id = -1
+        nodes = {}
 
         for feature in self.features:
             geometry = feature['geometry']
@@ -58,15 +59,30 @@ class Load(object):
 
             # Handle Node
             if geometry['type'] == 'Point':
-                osm_id -= 1
-                node = etree.Element(
-                    "node",
-                    id=str(osm_id),
-                    action='modify',
-                    visible='true',
-                    lat=str(coordinates[1]),
-                    lon=str(coordinates[0]),
-                )
+
+                # Check for overlapping
+                store = {'lat': coordinates[1], 'lon': coordinates[0]}
+                hash_key = hash(repr(store))
+
+                # Only add nodes that do not exist
+                if hash_key not in nodes:
+                    osm_id -= 1
+                    store['osm_id'] = osm_id
+                    nodes[hash_key] = store
+
+                    # Create Node Element
+                    node = etree.Element(
+                        "node",
+                        id=str(osm_id),
+                        action='modify',
+                        visible='true',
+                        lat=str(coordinates[1]),
+                        lon=str(coordinates[0]),
+                    )
+                else:
+                    # Create Node Element
+                    node = osm.xpath("//node[@id='2']")[0]
+
                 # Add tag attributes to node
                 for key, value in feature['properties'].items():
                     if value:
@@ -77,6 +93,8 @@ class Load(object):
 
             # Handle Way
             if geometry['type'] == 'LineString':
+
+                # Create Way Element
                 osm_id -= 1
                 way = etree.Element(
                     "way",
@@ -92,16 +110,27 @@ class Load(object):
 
                 # Get Refence Nodes
                 for coordinate in feature["geometry"]["coordinates"]:
-                    osm_id -= 1
-                    etree.SubElement(
-                        osm,
-                        "node",
-                        id=str(osm_id),
-                        visible='true',
-                        lon=str(coordinate[0]),
-                        lat=str(coordinate[1])
-                    )
-                    etree.SubElement(way, "nd", ref=str(osm_id))
+
+                    # Check for overlapping
+                    store = {'lat': coordinate[1], 'lon': coordinate[0]}
+                    hash_key = hash(repr(store))
+
+                    # Only add nodes that do not exist
+                    if hash_key not in nodes:
+                        osm_id -= 1
+                        store['osm_id'] = osm_id
+                        nodes[hash_key] = store
+
+                        # Create Reference Node Element
+                        etree.SubElement(
+                            osm,
+                            "node",
+                            id=str(osm_id),
+                            visible='true',
+                            lon=str(coordinate[0]),
+                            lat=str(coordinate[1])
+                        )
+                    etree.SubElement(way, "nd", ref=str(nodes[hash_key]['osm_id']))
                 osm.append(way)
 
         with open(outfile, 'wb') as f:

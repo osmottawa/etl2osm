@@ -63,7 +63,10 @@ def extract_epsg(crs):
             return int(crs.replace('epsg:', ''))
     if isinstance(crs, dict):
         if crs['type'] == 'name':
-            return extract_epsg(crs['properties']['name'])
+            if 'properties' in crs:
+                return extract_epsg(crs['properties']['name'])
+            else:
+                return extract_epsg(crs['name'])
     return crs
 
 

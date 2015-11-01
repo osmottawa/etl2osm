@@ -5,6 +5,14 @@ from osgeo import osr
 
 
 root = os.path.dirname(etl2osm.__file__)[:-len('etl2osm')]
+
+
+def test_file(path):
+    path = os.path.join(root, path)
+    if not os.path.exists(path):
+        raise ValueError('Could not find test file path: %s' % path)
+    return path
+
 roads = {
     'shp': os.path.join(root, "tests/shapefile/roads.shp"),
     'geojson': os.path.join(root, "tests/geojson/roads.geojson"),
