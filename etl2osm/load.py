@@ -4,6 +4,7 @@ import os
 import json
 import logging
 import fiona
+from etl2osm.transform import regex_strip
 from fiona.crs import from_epsg
 from lxml import etree
 
@@ -24,18 +25,24 @@ class Load(object):
     def write_shapefile(self, outfile):
         """ Writes data to Shapefile format """
 
-        # Default Coordinate reference system is WGS84
-        crs = from_epsg(4326)
-        driver = 'ESRI Shapefile'
-        encoding = 'utf-8'
-        schema = {
-            'geometry': self.geometry,
-            'properties': self.properties
-        }
+        # ------------->>>>>>>>>>---------------
+        # TO-DO: Handle multiple geometries
+        # Reading from GeoJSON with (point, line, polygon)
+        # ------------->>>>>>>>>>---------------
+        for geometry in self.geometry:
 
-        with fiona.open(outfile, 'w', driver=driver, schema=schema, crs=crs, encoding=encoding) as sink:
-            for feature in self.features:
-                sink.write(feature)
+            # Default Coordinate reference system is WGS84
+            crs = from_epsg(4326)
+            driver = 'ESRI Shapefile'
+            encoding = 'utf-8'
+            schema = {
+                'geometry': geometry,
+                'properties': self.properties
+            }
+
+            with fiona.open(outfile, 'w', driver=driver, schema=schema, crs=crs, encoding=encoding) as sink:
+                for feature in self.features:
+                    sink.write(feature)
 
     def write_geojson(self, outfile):
         """ Writes data to GeoJSON format """
@@ -81,12 +88,12 @@ class Load(object):
                     )
                 else:
                     # Create Node Element
-                    node = osm.xpath("//node[@id='2']")[0]
+                    node = osm.xpath("//node[@id='%i']" % osm_id)[0]
 
                 # Add tag attributes to node
                 for key, value in feature['properties'].items():
                     if value:
-                        etree.SubElement(node, "tag", k=key, v=str(value))
+                        etree.SubElement(node, "tag", {'k': key, 'v': regex_strip(value)})
 
                 # Add node to OSM
                 osm.append(node)
@@ -106,7 +113,7 @@ class Load(object):
                 # Add tag attributes to way
                 for key, value in feature['properties'].items():
                     if value:
-                        etree.SubElement(way, "tag", k=key, v=str(value))
+                        etree.SubElement(way, "tag", {'k': key, 'v': regex_strip(value)})
 
                 # Get Refence Nodes
                 for coordinate in feature["geometry"]["coordinates"]:

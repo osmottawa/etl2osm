@@ -23,19 +23,6 @@
         {
             "type":"Feature",
             "properties":{
-                "highway":"traffic_signals"
-            },
-            "geometry":{
-                "type":"Point",
-                "coordinates":[
-                    -75.6943340738,
-                    45.41618667070001
-                ]
-            }
-        },
-        {
-            "type":"Feature",
-            "properties":{
                 "highway":"residential",
                 "name":"Road-1"
             },
@@ -134,6 +121,19 @@
                         -75.6874974032,
                         45.41469992559999
                     ]
+                ]
+            }
+        },
+        {
+            "type":"Feature",
+            "properties":{
+                "highway":"traffic_signals"
+            },
+            "geometry":{
+                "type":"Point",
+                "coordinates":[
+                    -75.6943340738,
+                    45.41618667070001
                 ]
             }
         }

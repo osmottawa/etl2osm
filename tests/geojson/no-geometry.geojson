@@ -1,0 +1,37 @@
+{
+    "type": "FeatureCollection",
+    "crs": {
+        "type": "name",
+        "properties": {"name": "EPSG:4326"}
+    },
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "suffix": "ST",
+                "basename": "KENT"
+            }
+        },
+        {
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        -75.70595026016235,
+                        45.41990128711978
+                    ],
+                    [
+                        -75.69573640823364,
+                        45.407850991705544
+                    ]
+                ]
+            },
+            "type": "Feature",
+            "properties": {
+                "direction": "N",
+                "suffix": "ST",
+                "basename": "Lyon"
+            }
+        }
+    ]
+}

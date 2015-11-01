@@ -2,12 +2,31 @@
 import os
 import etl2osm
 import pytest
-from test_variables import config, roads, addresses, test_file
+from test_variables import config, roads, addresses, geojson, shapefile
+
+
+def test_load_no_geometry():
+    outfile = 'tmp-file.osm'
+    data = etl2osm.extract(geojson['no-geometry'])
+    data.save(outfile)
+    assert os.path.exists(outfile)
+    os.remove(outfile)
+
+    # ---------->>>>>>>>>-------------------
+    # TO-DO: Find corrupt Shapefile
+    # This shapefile does contain all it's goemetry
+    # Coverage: extract.py LINE 93
+    # Trigger: logging.warning('Could not find [geometry] in feature.')
+    # ---------->>>>>>>>>-------------------
+    data = etl2osm.extract(shapefile['no-geometry'])
+    data.save(outfile)
+    assert os.path.exists(outfile)
+    os.remove(outfile)
 
 
 def test_overlapping_osm_nodes():
     outfile = 'tmp-file.osm'
-    data = etl2osm.extract(test_file('tests/geojson/overlapping.geojson'))
+    data = etl2osm.extract(geojson['overlapping'])
     data.save(outfile)
     assert os.path.exists(outfile)
     os.remove(outfile)
@@ -57,6 +76,6 @@ def test_load_shapefile():
 
 if __name__ == '__main__':
     # test_load_geojson()
-    # test_load_osm()
+    test_load_osm()
     # test_load_kml()
-    test_overlapping_osm_nodes()
+    # test_load_shapefile()

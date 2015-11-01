@@ -7,11 +7,13 @@ from osgeo import osr
 root = os.path.dirname(etl2osm.__file__)[:-len('etl2osm')]
 
 
-def test_file(path):
-    path = os.path.join(root, path)
-    if not os.path.exists(path):
-        raise ValueError('Could not find test file path: %s' % path)
-    return path
+geojson = {
+    'overlapping': os.path.join(root, "tests/geojson/overlapping.geojson"),
+    'no-geometry': os.path.join(root, "tests/geojson/no-geometry.geojson")
+}
+shapefile = {
+    'no-geometry': os.path.join(root, "tests/shapefile/no-geometry.shp")
+}
 
 roads = {
     'shp': os.path.join(root, "tests/shapefile/roads.shp"),
@@ -34,13 +36,8 @@ config = {
     'no-conform': os.path.join(root, "tests/config/no-conform.json"),
     'numbers': os.path.join(root, "tests/config/numbers.json"),
     'lake_county': {
-        'roads': os.path.join(root, "examples/roads/lake_county.json"),
-        'address': os.path.join(root, "examples/addresses/lake_county.json")
+        'roads': os.path.join(root, "tests/config/lake_county.json")
     },
-    'sumter_county': {
-        'roads': os.path.join(root, "examples/roads/sumter_county.json"),
-        'address': os.path.join(root, "examples/addresses/sumter_county.json")
-    }
 }
 
 wkt = osr.SRS_WKT_WGS84

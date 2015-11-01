@@ -60,14 +60,14 @@ def test_extract_geojson():
     assert data.crs == crs
     assert data.epsg == 'EPSG:4326'
     assert data.geojson
-    assert data.geometry == 'LineString'
+    assert 'LineString' in data.geometry
     assert data.properties
     assert len(data)
 
 
 def test_extract_geojson_crs():
     data = etl2osm.extract(roads['geojson-WGS84'])
-    assert data.geometry == 'LineString'
+    assert 'LineString' in data.geometry
     assert data.properties
     assert data.crs == crs
     assert data.epsg == 'EPSG:4326'
@@ -89,6 +89,5 @@ def test_extract_lake_county_roads():
 
 
 if __name__ == '__main__':
-    test_extract_shapefile()
     test_extract_geojson()
     test_extract_kml()

@@ -13,6 +13,17 @@ from etl2osm.models import suffix, direction, cap_except
 true_list = ['True', 'true', '1', True, 1]
 
 
+def regex_strip(value):
+    # ESRI Shapfiles have fields [SUB] blank fields at the end
+    # Regex will search all characters but must END with a letter or number
+    # Also acts as an .strip() function
+    if isinstance(value, (string_types, binary_type)):
+        match = re.search(r'^([a-z,A-Z,0-9].+[a-z,A-Z,0-9])', value)
+        if match:
+            value = match.group()
+    return str(value)
+
+
 def config_to_properties(config):
     properties = OrderedDict()
     config = read_config(config)

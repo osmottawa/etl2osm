@@ -76,7 +76,7 @@ class Extract(Load):
 
         with fiona.drivers():
             with fiona.open(infile) as source:
-                self.geometry = source.meta['schema']['geometry']
+                self.geometry = set([source.meta['schema']['geometry']])
                 self.properties = source.meta['schema']['properties']
                 self.wkt = source.meta['crs_wkt']
 
@@ -112,17 +112,38 @@ class Extract(Load):
             if geojson['type'] == 'FeatureCollection':
                 if not geojson['features']:
                     raise ValueError('FeatureCollection has [0] features.')
-                else:
-                    # --------->>>>>>>---------------------------
-                    # GeoJSON properties NEEDS IMPROVEMENTS:
-                    # - Add appropriate datatype (int/float,str)
-                    # - Scan geojson for all available attributes
-                    # --------->>>>>>>---------------------------
-                    self.properties = dict((key, 'str') for key in geojson['features'][0]['properties'].keys())
+
+                # --------->>>>>>>---------------------------
+                # GeoJSON properties NEEDS IMPROVEMENTS:
+                # - Add appropriate datatype (int/float,str)
+                # - Scan geojson for all available attributes
+                # - Data may contain multiple geometries
+                # --------->>>>>>>---------------------------
+
+                """
+                if 'geometry' in geojson['features'][0]:
                     self.geometry = geojson['features'][0]['geometry']['type']
+                else:
+                    self.geometry = "Unknown"
+                    logging.warning('Could not find [geometry] in feature.')
+                """
+                properties = set()
+                self.geometry = set()
 
                 for feature in geojson['features']:
-                    self.features.append(feature)
+                    # Add unique attribute keys to properties
+                    if 'properties' in feature:
+                        properties.update(feature['properties'].keys())
+
+                    # Only add features with geometry
+                    if feature.get('geometry'):
+                        self.features.append(feature)
+                        self.geometry.update([feature['geometry']['type']])
+                    else:
+                        logging.warning('Could not find [geometry] in feature.')
+
+                # Creating basic properties for attribute table when building a shapefile.
+                self.properties = dict((key, 'str') for key in properties)
 
     def read_topojson(self, infile, **kwargs):
         """Reads a TopoJSON and gives the results in GeoJSON format"""
