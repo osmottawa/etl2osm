@@ -69,7 +69,8 @@ class Load(object):
                 )
                 # Add tag attributes to node
                 for key, value in feature['properties'].items():
-                    etree.SubElement(node, "tag", k=key, v=str(value))
+                    if value:
+                        etree.SubElement(node, "tag", k=key, v=str(value))
 
                 # Add node to OSM
                 osm.append(node)
@@ -86,7 +87,8 @@ class Load(object):
 
                 # Add tag attributes to way
                 for key, value in feature['properties'].items():
-                    etree.SubElement(way, "tag", k=key, v=str(value))
+                    if value:
+                        etree.SubElement(way, "tag", k=key, v=str(value))
 
                 # Get Refence Nodes
                 for coordinate in feature["geometry"]["coordinates"]:

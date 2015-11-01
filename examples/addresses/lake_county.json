@@ -18,15 +18,15 @@
     "website": "http://www.lakecountyfl.gov/departments/information_technology/geographic_information_services/datadownloads.aspx",
     "license": "Public Domain",
     "conform": {
-        "number": "AddressNum",
-        "street": [
+        "addr:housenumber": "AddressNum",
+        "addr:street": [
             {"function": "direction", "field": "PrefixDire"},
             "PrefixType",
             {"function": "title", "field": "BaseStreet"},
             {"function": "suffix", "field": "SuffixType"}
         ],
-        "postcode": "ZipCode",
-        "unit": "UnitNumber",
+        "addr:postcode": "ZipCode",
+        "addr:unit": "UnitNumber",
         "alt_name": "AliasName"
     }
 }

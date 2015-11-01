@@ -17,7 +17,7 @@
     },
     "license": "Public Domain",
     "conform": {
-        "street": [
+        "addr:street": [
             {"function": "direction", "field":"DIRECTION"},
             {"function": "title", "field": "ST_NAME"},
             {"function": "suffix", "field": "ST_EXT"}

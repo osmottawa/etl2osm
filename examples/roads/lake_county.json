@@ -18,7 +18,7 @@
     "website": "http://www.lakecountyfl.gov/departments/information_technology/geographic_information_services/datadownloads.aspx",
     "license": "Public Domain",
     "conform": {
-        "street": [
+        "addr:street": [
             {"function": "direction", "field": "PrefixDire"},
             "PrefixType",
             {"function": "title", "field": "BaseStreet"},
