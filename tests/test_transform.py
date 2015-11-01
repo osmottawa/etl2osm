@@ -248,7 +248,7 @@ def test_transform_geojson_config():
     assert data[0]['properties']['NumberOfLa'] == u'2'
 
     data.transform(config['lake_county']['roads'])
-    assert data[0]['properties']['street'] == 'Lenze Drive'
+    assert data[0]['properties']['addr:street'] == 'Lenze Drive'
     assert data[0]['properties']['lanes'] == 2
     assert data.epsg == 'EPSG:4326'
 

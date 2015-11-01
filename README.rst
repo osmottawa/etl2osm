@@ -3,11 +3,8 @@ ETL2OSM
 
 Extract, Transform and Load to OpenStreetMap
 
-.. image:: https://coveralls.io/repos/osmottawa/etl2osm/badge.svg?branch=master&service=github
-    :target: https://coveralls.io/github/osmottawa/etl2osm?branch=master
-
-.. image:: https://travis-ci.org/osmottawa/etl2osm.svg?branch=master
-    :target: https://travis-ci.org/osmottawa/etl2osm
+[![Build Status](https://travis-ci.org/osmottawa/etl2osm.svg?branch=master)](https://travis-ci.org/osmottawa/etl2osm)
+[![Coverage Status](https://coveralls.io/repos/osmottawa/etl2osm/badge.svg?branch=master&service=github)](https://coveralls.io/github/osmottawa/etl2osm?branch=master)
 
 Features
 --------
@@ -31,22 +28,19 @@ API Overview
 
 Step by Step doing a typical `Extract Transform Load` processing.
 
-.. code-block:: python
-
-    import etl2osm
-    
-    data = etl2osm.extract("infile.shp")
-    data.transform("config.json")
-    data.save("outfile.osm")
-
+```python
+>>> import etl2osm
+>>> data = etl2osm.extract("infile.shp")
+>>> data.transform("config.json")
+>>> data.save("outfile.osm")
+```
 
 Doing the entire process in a single line
 
-.. code-block:: python
+```python
 
-    import etl2osm
-    
-    etl2osm.process("infile.shp", "config.json", "outfile.osm")
+>>> import etl2osm
+>>> etl2osm.process("infile.shp", "config.json", "outfile.osm")
 
 
 Command Line Interface
@@ -54,9 +48,9 @@ Command Line Interface
 
 Reading the a file, the standard output will be in a GeoJSON format.
 
-.. code-block:: bash
-
-    $ etl2osm infile.shp --config config.json --outfile outfile.osm
+```bash
+$ etl2osm infile.shp --config config.json --outfile outfile.osm
+```
 
 See [Examples](https://github.com/osmottawa/etl2osm/tree/master/examples) for more information.
 
@@ -65,13 +59,12 @@ Making a Config.json
 
 Whenever you want to perform a transformation, include a config file in a JSON format.
 
-Road Data
-~~~~~~~~~
+### Road Data
 
-.. code-block:: json
+```json
 {
     "conform": {
-        "street": [
+        "addr:street": [
             {"function": "direction", "field":"DIRECTION"},
             {"function": "title", "field": "ST_NAME"},
             {"function": "suffix", "field": "ST_EXT"}
@@ -79,58 +72,53 @@ Road Data
         "maxspeed": {"function": "mph", "field": "Speed_Limi"}
     }
 }
+```
 
-Address Data
-~~~~~~~~~~~~
+### Address Data
 
-.. code-block:: json
+```json
 {
     "conform": {
-        "number": {"int": "True", "field": "NUMBER_"},
-        "street": [
+        "addr:number": {"int": "True", "field": "NUMBER_"},
+        "addr:street": [
             {"function": "direction", "field": "PREDIR"},
             {"function": "title", "field": "ST_NAME"},
             {"function": "suffix", "field": "STSUFFIX"}
         ],
-        "postcode": {"int": "True", "field": "ZIP_CODES"},
-        "unit": "UNIT"
+        "addr:postcode": {"int": "True", "field": "ZIP_CODES"},
+        "addr:unit": "UNIT"
     }
 }
-
+```
 
 Installation
 ------------
 
-GDAL & Fiona
-~~~~~~~~~~~~
+### GDAL & Fiona
 
 ETL2OSM depends on GDAL & Fiona, to install those packages using Windows.
 Download the appropriate library from [Unofficial Windows Binaries for Python Extension Packages](http://www.lfd.uci.edu/~gohlke/pythonlibs/) matching your Python version (Python27/34) & 64/32bit.
 
-.. code-block:: bash
+```bash
+$ cd packages
+$ pip install Fiona-1.6.2-cp27-none-win32.whl
+$ pip install GDAL-1.11.3-cp27-none-win32.whl
+```
 
-    $ cd packages
-    $ pip install Fiona-1.6.2-cp27-none-win32.whl
-    $ pip install GDAL-1.11.3-cp27-none-win32.whl
-
-
-PyPi Install
-~~~~~~~~~~~~
+### PyPi Install
 
 Install ETL2OSM from PyPi's online packages.
 
-.. code-block:: bash
+```bash
+$ pip install etl2osm
+```
 
-    $ pip install etl2osm
-
-
-GitHub Install
-~~~~~~~~~~~~~~
+### GitHub Install
 
 Install the latest version directly from Github.
 
-.. code-block:: bash
-
-    $ git clone https://github.com/osmottawa/etl2osm/
-    $ cd etl2osm
-    $ pip install .
+```bash
+$ git clone https://github.com/osmottawa/etl2osm/
+$ cd etl2osm
+$ pip install .
+```
