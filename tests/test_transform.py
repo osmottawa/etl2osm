@@ -229,11 +229,25 @@ def test_transform_title():
     properties = {'NAME': "3RD AVENUE"}
     assert etl2osm.clean_field(properties, conform) == '3rd Avenue'
 
+    conform = {'function': 'title', 'field': "NAME"}
+    properties = {'NAME': None}
+    assert not etl2osm.clean_field(properties, conform)
+
+    conform = {'function': 'title', 'field': "NAME"}
+    properties = {'NAME': 2}
+    assert etl2osm.clean_field(properties, conform) == 2
+
 
 def test_transform_mph():
     conform = {'function': 'mph', 'field': "SPEED"}
     properties = {'SPEED': "55"}
     assert etl2osm.clean_field(properties, conform) == '55 mph'
+
+
+def test_transform_text():
+    conform = {'text': 'Lake County'}
+    properties = {'NO': "CLUE"}
+    assert etl2osm.clean_field(properties, conform) == 'Lake County'
 
 
 def test_transform_geojson():
@@ -271,4 +285,4 @@ if __name__ == '__main__':
     # test_transform_int()
     # test_transform_float()
     # test_transform_geojson_config()
-    test_transform_config_to_properties()
+    test_transform_title()

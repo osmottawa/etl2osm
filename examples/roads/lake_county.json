@@ -18,13 +18,15 @@
     "website": "http://www.lakecountyfl.gov/departments/information_technology/geographic_information_services/datadownloads.aspx",
     "license": "Public Domain",
     "conform": {
-        "addr:street": [
+        "name": [
             {"function": "direction", "field": "PrefixDire"},
             "PrefixType",
             {"function": "title", "field": "BaseStreet"},
             {"function": "suffix", "field": "SuffixType"}
         ],
         "lanes": {"int": "True", "field": "NumberOfLa"},
-        "oneway": "Oneway"
+        "oneway": "Oneway",
+        "source": {"text": "Lake County"},
+        "highway": {"text": "residential"}
     }
 }

@@ -159,16 +159,18 @@ def read_config(config):
 
 
 def titlecase_except(value, exceptions=cap_except):
-    word_list = re.split(' ', value)
-    final = []
+    if isinstance(value, (string_types, binary_type)):
+        word_list = re.split(' ', value)
+        final = []
 
-    for word in word_list:
-        if word in exceptions:
-            final.append(word)
-        else:
-            final.append(word.capitalize())
+        for word in word_list:
+            if word in exceptions:
+                final.append(word)
+            else:
+                final.append(word.capitalize())
 
-    return ' '.join(final)
+        return ' '.join(final)
+    return value
 
 
 def clean_field(properties, conform):
@@ -203,8 +205,6 @@ def clean_field(properties, conform):
             if field not in properties:
                 raise ValueError('Cannot find attribute [%s] using the Attribute Function.' % field)
             value.append(properties[field])
-    else:
-        raise ValueError('Unknown Error - Cannot read your config file: \n %s' % conform)
 
     # Attribute Functions
     if 'function' in conform:
@@ -283,6 +283,10 @@ def clean_field(properties, conform):
                 value = float(value)
             except:
                 logging.warning('Cannot convert [%s] to float.' % value)
+
+    # Converts String to Integer [True/False]
+    if 'text' in conform:
+        value = conform['text']
 
     return value
 
