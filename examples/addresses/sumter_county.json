@@ -18,13 +18,13 @@
     "website": "http://sumtercountyfl.gov/238/Downloadable-Maps",
     "license": "Public Domain",
     "conform": {
-        "number": {"int": "NUMBER_"},
+        "number": {"int": "True", "field": "NUMBER_"},
         "street": [
-            {"direction": "PREDIR"},
-            {"title": "ST_NAME"},
-            {"suffix": "STSUFFIX"}
+            {"function": "direction", "field": "PREDIR"},
+            {"function": "title", "field": "ST_NAME"},
+            {"function": "suffix", "field": "STSUFFIX"}
         ],
-        "postcode": {"int": "ZIP_CODES"},
+        "postcode": {"int": "True", "field": "ZIP_CODES"},
         "unit": "UNIT"
     }
 }

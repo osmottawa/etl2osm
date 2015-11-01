@@ -20,10 +20,10 @@
     "conform": {
         "number": "AddressNum",
         "street": [
-            {"direction": "PrefixDire"},
+            {"function": "direction", "field": "PrefixDire"},
             "PrefixType",
-            {"title": "BaseStreet"},
-            {"suffix": "SuffixType"}
+            {"function": "title", "field": "BaseStreet"},
+            {"function": "suffix", "field": "SuffixType"}
         ],
         "postcode": "ZipCode",
         "unit": "UnitNumber",

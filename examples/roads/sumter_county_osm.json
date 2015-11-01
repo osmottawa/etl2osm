@@ -17,13 +17,13 @@
     },
     "license": "Public Domain",
     "conform": {
-        "addr:street": {
-            "direction": "DIRECTION",
-            "title": "ST_NAME",
-            "suffix": "ST_EXT"
-        },
+        "addr:street": [
+            {"function": "direction", "field": "DIRECTION"},
+            {"function": "title", "field": "ST_NAME"},
+            {"function": "suffix", "field": "ST_EXT"}
+        ],
         "maxspeed": {
-            "mph": "Speed_Limi"
+            "function": "mph", "field": "Speed_Limi"
         }
     }
 }

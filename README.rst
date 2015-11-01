@@ -14,7 +14,7 @@ Features
 
 - Extracts & Loads data from multiple formats:
 
-  - Shapefile 
+  - Shapefile
   - GeoJSON
   - OSM
   - KML (Coming Soon)
@@ -35,7 +35,7 @@ Step by Step doing a typical `Extract Transform Load` processing.
 
     import etl2osm
 
-    data = etl2osm.read(infile)
+    data = etl2osm.extract(infile)
     data.transform(config)
     data.save(outfile)
 
@@ -44,14 +44,14 @@ Doing the entire process in a single line
 
 .. code-block:: python
 
-    etl2osm.process(infile, outfile=outfile, config=config)
+    etl2osm.process(infile, config, outfile)
 
 
 To see what's happening, you can turn on the `Debug` mode.
 
 .. code-block:: python
 
-    etl2osm.process(infile, debug=True)
+    etl2osm.process(infile, config, outfile, debug=True)
 
 
 Command Line Interface
@@ -103,40 +103,33 @@ Road Data
 ~~~~~~~~~
 
 .. code-block:: json
-
-    {
-        "conform": {
-            "type": "shapefile",
-            "street": {
-                "direction": "West",
-                "basename": "Seminole",
-                "suffix": "Avenue"
-            },
-            "maxspeed": {
-                "mph": 45
-            }
-        }
+{
+    "conform": {
+        "street": [
+            {"function": "direction", "field":"DIRECTION"},
+            {"function": "title", "field": "ST_NAME"},
+            {"function": "suffix", "field": "ST_EXT"}
+        ],
+        "maxspeed": {"function": "mph", "field": "Speed_Limi"}
     }
-
+}
 
 Address Data
 ~~~~~~~~~~~~
 
 .. code-block:: json
-
-    {
-        "conform": {
-            "type": "shapefile",
-            "housenumber": 264,
-            "street": {
-                "basename": "Lawthorn",
-                "suffix": "Street"
-            },
-            "postcode": 32162,
-            "unit": 4
-        }
+{
+    "conform": {
+        "number": {"int": "True", "field": "NUMBER_"},
+        "street": [
+            {"function": "direction", "field": "PREDIR"},
+            {"function": "title", "field": "ST_NAME"},
+            {"function": "suffix", "field": "STSUFFIX"}
+        ],
+        "postcode": {"int": "True", "field": "ZIP_CODES"},
+        "unit": "UNIT"
     }
-
+}
 
 
 
