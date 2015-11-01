@@ -48,7 +48,7 @@ Command Line Interface
 Reading the a file, the standard output will be in a GeoJSON format.
 
 ```bash
-$ etl2osm infile.shp --config config.json --outfile outfile.osm
+$ etl2osm "infile.shp" --config "config.json" --outfile "outfile.osm"
 ```
 
 See [Examples](https://github.com/osmottawa/etl2osm/tree/master/examples) for more information.
