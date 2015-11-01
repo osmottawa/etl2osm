@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 from __future__ import absolute_import
 import logging
 import os
 import fiona
 import json
 from etl2osm.transform import reproject, transform_columns, read_config, extract_epsg
+from etl2osm.load import Load
 from osgeo import osr
 
 
-class Extract(object):
+class Extract(Load):
     def __init__(self, infile, **kwargs):
         # Reset Values
         self.features = []
@@ -107,6 +107,11 @@ class Extract(object):
 
             # Read Feature Collection
             if geojson['type'] == 'FeatureCollection':
+                if not geojson['features']:
+                    raise ValueError('FeatureCollection has [0] features.')
+                else:
+                    self.properties = geojson['features'][0].keys()
+
                 for feature in geojson['features']:
                     self.features.append(feature)
 
@@ -131,7 +136,7 @@ class Extract(object):
     def transform(self, config={}):
         """ Transform the data using the config file """
 
-        config = read_config(config)
+        self.config = read_config(config)
 
         for x, feature in enumerate(self.features):
             # Reproject data to WGS84
@@ -139,8 +144,8 @@ class Extract(object):
                 feature = reproject(feature, self.crs, osr.SRS_WKT_WGS84)
 
             # Transform Columns
-            if config:
-                feature = transform_columns(feature, config)
+            if self.config:
+                feature = transform_columns(feature, self.config)
 
             # Save feature to self
             self[x] = feature

@@ -11,6 +11,7 @@ roads = {
     'geojson': os.path.join(root, "tests/geojson/roads.geojson"),
     'geojson-blank': os.path.join(root, "tests/geojson/roads-blank.geojson"),
     'geojson-WGS84': os.path.join(root, "tests/geojson/roads-WGS84.geojson"),
+    'geojson-zero': os.path.join(root, "tests/geojson/roads-zero.geojson"),
     'topojson': os.path.join(root, "tests/topojson/roads.topojson"),
     'kml': os.path.join(root, "tests/kml/roads.kml"),
     'osm': os.path.join(root, "tests/osm/roads.osm"),

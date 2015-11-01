@@ -25,6 +25,11 @@ def test_extract_unknown():
         etl2osm.extract(roads['unknown'])
 
 
+def test_extract_zero():
+    with pytest.raises(ValueError):
+        etl2osm.extract(roads['geojson-zero'])
+
+
 def test_extract_file_extension():
     with pytest.raises(ValueError):
         etl2osm.extract("/path-not-exist.topojson")
