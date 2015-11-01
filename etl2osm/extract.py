@@ -5,7 +5,7 @@ import logging
 import os
 import fiona
 import json
-from etl2osm.transform import reproject, transform_columns, read_config, extract_epsg
+from etl2osm.transform import reproject, transform_columns, read_config, extract_epsg, config_to_properties
 from etl2osm.load import Load
 from osgeo import osr
 
@@ -77,8 +77,8 @@ class Extract(Load):
 
         with fiona.drivers():
             with fiona.open(infile) as source:
-                self.meta = source.meta
-                self.schema = source.meta['schema']
+                self.geometry = source.meta['schema']['geometry']
+                self.properties = source.meta['schema']['properties']
                 self.wkt = source.meta['crs_wkt']
 
                 # Read EPSG
@@ -110,7 +110,13 @@ class Extract(Load):
                 if not geojson['features']:
                     raise ValueError('FeatureCollection has [0] features.')
                 else:
-                    self.properties = geojson['features'][0].keys()
+                    # --------->>>>>>>---------------------------
+                    # GeoJSON properties NEEDS IMPROVEMENTS:
+                    # - Add appropriate datatype (int/float,str)
+                    # - Scan geojson for all available attributes
+                    # --------->>>>>>>---------------------------
+                    self.properties = dict((key, 'str') for key in geojson['features'][0]['properties'].keys())
+                    self.geometry = geojson['features'][0]['geometry']['type']
 
                 for feature in geojson['features']:
                     self.features.append(feature)
@@ -137,6 +143,9 @@ class Extract(Load):
         """ Transform the data using the config file """
 
         self.config = read_config(config)
+
+        if config:
+            self.properties = config_to_properties(self.config)
 
         for x, feature in enumerate(self.features):
             # Reproject data to WGS84

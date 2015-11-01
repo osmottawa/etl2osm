@@ -11,6 +11,30 @@ from osgeo import osr, ogr
 from etl2osm.models import suffix, direction, cap_except
 
 
+true_list = ['True', 'true', '1', True, 1]
+
+
+def config_to_properties(config):
+    properties = OrderedDict()
+    config = read_config(config)
+
+    if 'conform' not in config:
+        raise ValueError('Config file missing [conform] to format attributes.')
+
+    for key, value in config['conform'].items():
+        datatype = 'str'
+
+        # If value is a dictionary, looking for {'int': True}
+        if isinstance(value, (dict)):
+            if value.get('int') in true_list:
+                datatype = 'int'
+            elif value.get('float') in true_list:
+                datatype = 'float'
+        properties[key] = datatype
+
+    return properties
+
+
 def get_coordinate_rerefence_system(crs):
     projection = osr.SpatialReference()
 
@@ -135,8 +159,6 @@ def titlecase_except(value, exceptions=cap_except):
 
 
 def clean_field(properties, conform):
-    true_list = ['True', 'true', '1', True, 1]
-
     if 'field' in conform:
         # STRING
         if isinstance(conform, dict):

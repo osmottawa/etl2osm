@@ -253,6 +253,13 @@ def test_transform_geojson_config():
     assert data.epsg == 'EPSG:4326'
 
 
+def test_transform_config_to_properties():
+    properties = etl2osm.config_to_properties(config['lake_county']['roads'])
+    assert properties
+    assert properties['street'] == 'str'
+    assert properties['lanes'] == 'int'
+    assert properties['oneway'] == 'str'
+
 if __name__ == '__main__':
     # test_transform_columns_basic()
     # test_transform_regex()
@@ -260,4 +267,5 @@ if __name__ == '__main__':
     # test_transform_regex_int()
     # test_transform_int()
     # test_transform_float()
-    test_transform_geojson_config()
+    # test_transform_geojson_config()
+    test_transform_config_to_properties()

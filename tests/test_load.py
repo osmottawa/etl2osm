@@ -14,5 +14,19 @@ def test_load_geojson():
     os.remove(outfile)
 
 
+def test_load_shapefile():
+    outfile = 'tmp-file.shp'
+    basename = os.path.splitext(outfile)[0]
+
+    data = etl2osm.extract(roads['lake_county'])
+    data.transform(config['lake_county']['roads'])
+    data.save(outfile)
+
+    for ext in ['.shp', '.cpg', '.dbf', '.prj', '.shx']:
+        filepath = ''.join((basename, ext))
+        assert os.path.exists(filepath)
+        os.remove(filepath)
+
 if __name__ == '__main__':
-    test_load_geojson()
+    # test_load_geojson()
+    test_load_shapefile()

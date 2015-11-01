@@ -24,18 +24,17 @@ class Load(object):
     def write_shapefile(self, outfile):
         """ Writes data to Shapefile format """
 
-        # Data attributes from configuration file
-        properties = dict((key, 'str') for key in self.config['conform'].keys())
-
         # Default Coordinate reference system is WGS84
         crs = from_epsg(4326)
         driver = 'ESRI Shapefile'
         encoding = 'utf-8'
-        schema = data.schema
-        schema['properties'] = properties
+        schema = {
+            'geometry': self.geometry,
+            'properties': self.properties
+        }
 
         with fiona.open(outfile, 'w', driver=driver, schema=schema, crs=crs, encoding=encoding) as sink:
-            for feature in data:
+            for feature in self.features:
                 sink.write(feature)
 
     def write_osm(self, outfile):

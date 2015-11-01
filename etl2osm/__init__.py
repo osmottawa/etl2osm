@@ -13,4 +13,4 @@ __copyright__ = 'Copyright (c) 2015 OSM Canada Team'
 # CLI
 from etl2osm.cli import cli  # noqa
 from etl2osm.api import process, extract  # noqa
-from etl2osm.transform import reproject, transform_columns, clean_field  # noqa
+from etl2osm.transform import reproject, transform_columns, clean_field, config_to_properties  # noqa
