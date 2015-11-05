@@ -1,27 +1,4 @@
-# -*- coding: utf-8 -*-
-
-cap_except = [
-    "'s",
-    "the",
-    "in",
-    "a",
-    "CR",
-    "US",
-    "SR"
-]
-
-direction = {
-    "N": "North",
-    "S": "South",
-    "E": "East",
-    "W": "West",
-    "NE": "Northeast",
-    "NW": "Northwest",
-    "SE": "Southeast",
-    "SW": "Southwest"
-}
-
-suffix = {
+{
     "ALY": "Alley",
     "ANX": "Annex",
     "ARC": "Arcade",

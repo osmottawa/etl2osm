@@ -12,9 +12,9 @@ def process(infile, config, outfile, **kwargs):
     :param ``format``: Data output format [shp, geojson, osm].
     """
 
-    data = Extract(infile)
-    data.transform(config)
-    data.save(outfile)
+    data = Extract(infile, **kwargs)
+    data.transform(config, **kwargs)
+    data.save(outfile, **kwargs)
     return data
 
 

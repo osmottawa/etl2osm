@@ -10,7 +10,7 @@ from lxml import etree
 
 
 class Load(object):
-    def save(self, outfile):
+    def save(self, outfile, **kwargs):
         """ Saves file to path """
 
         extension = os.path.splitext(outfile)[1][1:]

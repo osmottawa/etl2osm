@@ -96,7 +96,6 @@ class Extract(Load):
         """Reads a GeoJSON and gives the results in GeoJSON format"""
 
         logging.info('Reading GeoJSON: %s' % infile)
-
         with open(infile) as f:
             geojson = json.load(f)
 
@@ -163,7 +162,7 @@ class Extract(Load):
         logging.info('Reading OSM: %s' % infile)
         raise ValueError('Reading OSM not implemented')
 
-    def transform(self, config={}):
+    def transform(self, config={}, **kwargs):
         """ Transform the data using the config file """
 
         self.config = read_config(config)
@@ -174,11 +173,11 @@ class Extract(Load):
         for x, feature in enumerate(self.features):
             # Reproject data to WGS84
             if not self.epsg == 'ESPG:4326':
-                feature = reproject(feature, self.crs, osr.SRS_WKT_WGS84)
+                feature = reproject(feature, self.crs, osr.SRS_WKT_WGS84, **kwargs)
 
             # Transform Columns
             if self.config:
-                feature = transform_columns(feature, self.config)
+                feature = transform_columns(feature, self.config, **kwargs)
 
             # Save feature to self
             self[x] = feature

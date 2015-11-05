@@ -4,13 +4,35 @@ import os
 import re
 import json
 import logging
+import etl2osm
 from six import string_types, binary_type
 from collections import OrderedDict
 from osgeo import osr, ogr
-from etl2osm.models import suffix, direction, cap_except
 
 
 true_list = ['True', 'true', '1', True, 1]
+
+
+def load_json(model, **kwargs):
+    if model in kwargs:
+        model = kwargs[model]
+
+    # Model is already in JSON format
+    if isinstance(model, (dict, list, tuple)):
+        return model
+    else:
+        # Find user defined file path
+        if os.path.exists(model):
+            with open(model) as f:
+                return json.load(f)
+
+        # Look inside etl2osm [models] folder for .json files
+        root = os.path.dirname(etl2osm.__file__)[:-len('etl2osm')]
+        path = os.path.join(root, 'etl2osm', 'models', model + '.json')
+
+        if os.path.exists(path):
+            with open(path) as f:
+                return json.load(f)
 
 
 def regex_strip(value):
@@ -81,7 +103,7 @@ def extract_epsg(crs):
     return crs
 
 
-def reproject(feature, crs_source, crs_target=4326):
+def reproject(feature, crs_source, crs_target=4326, **kwargs):
     # Source Projection
     p1 = get_coordinate_rerefence_system(extract_epsg(crs_source))
 
@@ -158,13 +180,13 @@ def read_config(config):
         return json.load(f, object_pairs_hook=OrderedDict)
 
 
-def titlecase_except(value, exceptions=cap_except):
+def titlecase_except(value, **kwargs):
     if isinstance(value, (string_types, binary_type)):
         word_list = re.split(' ', value)
         final = []
 
         for word in word_list:
-            if word in exceptions:
+            if word in load_json('title_except', **kwargs):
                 final.append(word)
             else:
                 final.append(word.capitalize())
@@ -173,7 +195,7 @@ def titlecase_except(value, exceptions=cap_except):
     return value
 
 
-def clean_field(properties, conform):
+def clean_field(properties, conform, **kwargs):
     if 'field' in conform:
         # STRING
         if isinstance(conform, dict):
@@ -231,6 +253,8 @@ def clean_field(properties, conform):
 
         # Replaces the abreviated suffix (AVE=Avenue)
         elif 'suffix' in conform['function']:
+            suffix = load_json('suffix', **kwargs)
+
             if 'field' not in conform:
                 raise ValueError('[field] is missing using the Suffix Attribute Function.')
             if properties[field]:
@@ -241,6 +265,8 @@ def clean_field(properties, conform):
 
         # Replaces the abreviated directions (NE=Northeast)
         elif 'direction' in conform['function']:
+            direction = load_json('direction', **kwargs)
+
             if 'field' not in conform:
                 raise ValueError('[field] is missing using the Direction Attribute Function.')
             if properties[field]:
@@ -291,7 +317,7 @@ def clean_field(properties, conform):
     return value
 
 
-def transform_fields(properties, conform):
+def transform_fields(properties, conform, **kwargs):
     fields = OrderedDict()
     for key in conform.keys():
         value = None
@@ -301,28 +327,28 @@ def transform_fields(properties, conform):
         if isinstance(conform[key], (string_types, binary_type)):
             if conform[key] in properties:
                 value = properties[conform[key]]
-                value = clean_field(properties, conform[key])
+                value = clean_field(properties, conform[key], **kwargs)
             fields.update(dict([(key, value)]))
 
         # DICT
         # Replace & join multiple fields together
         elif isinstance(conform[key], (OrderedDict, dict)):
-            value = clean_field(properties, conform[key])
+            value = clean_field(properties, conform[key], **kwargs)
             fields.update(dict([(key, value)]))
 
         # LIST
         # Join a values from a list
         elif isinstance(conform[key], (list, tuple)):
-            value = clean_field(properties, conform[key])
+            value = clean_field(properties, conform[key], **kwargs)
             fields.update(dict([(key, value)]))
 
     return fields
 
 
-def transform_columns(feature, config):
+def transform_columns(feature, config, **kwargs):
     config = read_config(config)
     conform = config['conform']
-    feature['properties'] = transform_fields(feature['properties'], conform)
+    feature['properties'] = transform_fields(feature['properties'], conform, **kwargs)
 
     return feature
 
