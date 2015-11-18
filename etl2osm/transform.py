@@ -28,7 +28,7 @@ def load_json(model, **kwargs):
 
         # Look inside etl2osm [models] folder for .json files
         root = os.path.dirname(etl2osm.__file__)[:-len('etl2osm')]
-        path = os.path.join(root, 'etl2osm', 'models', model + '.json')
+        path = os.path.join(root, 'etl2osm', 'models', model)
 
         if os.path.exists(path):
             with open(path) as f:
@@ -186,7 +186,7 @@ def titlecase_except(value, **kwargs):
         final = []
 
         for word in word_list:
-            if word in load_json('title_except', **kwargs):
+            if word in load_json('title_except.json', **kwargs):
                 final.append(word)
             else:
                 final.append(word.capitalize())
@@ -253,7 +253,7 @@ def clean_field(properties, conform, **kwargs):
 
         # Replaces the abreviated suffix (AVE=Avenue)
         elif 'suffix' in conform['function']:
-            suffix = load_json('suffix', **kwargs)
+            suffix = load_json('suffix.json', **kwargs)
 
             if 'field' not in conform:
                 raise ValueError('[field] is missing using the Suffix Attribute Function.')
@@ -265,7 +265,7 @@ def clean_field(properties, conform, **kwargs):
 
         # Replaces the abreviated directions (NE=Northeast)
         elif 'direction' in conform['function']:
-            direction = load_json('direction', **kwargs)
+            direction = load_json('direction.json', **kwargs)
 
             if 'field' not in conform:
                 raise ValueError('[field] is missing using the Direction Attribute Function.')
