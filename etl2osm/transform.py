@@ -79,7 +79,9 @@ def get_coordinate_rerefence_system(crs):
     elif isinstance(crs, (string_types, binary_type)):
         valid = projection.ImportFromWkt(crs)
     else:
-        raise ValueError('Cannot detect the type Coordinate Reference System (CRS)')
+        # If no source projection is present, it will assume WGS84 (EPSG:4326)
+        logging.warning('Cannot detect the type Coordinate Reference System (CRS)')
+        return projection.ImportFromEPSG(4326)
 
     # Check if results are valid (0 == Valid projection)
     if not valid == 0:
