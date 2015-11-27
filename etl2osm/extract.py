@@ -15,25 +15,27 @@ class Extract(Load):
         self.features = []
         self.wkt = ''
         self.epsg = 'EPSG:4326'
-        extension = os.path.splitext(infile)[1][1:]
 
-        read_file = {
-            'osm': self.read_osm,
-            'geojson': self.read_geojson,
-            'json': self.read_geojson,
-            'shp': self.read_shp,
-            'kml': self.read_kml,
-            'topojson': self.read_topojson
-        }
+        if isinstance(infile, dict):
+            self.read_geojson(infile)
+        else:
+            extension = os.path.splitext(infile)[1][1:]
+            read_file = {
+                'osm': self.read_osm,
+                'geojson': self.read_geojson,
+                'json': self.read_geojson,
+                'shp': self.read_shp,
+                'kml': self.read_kml,
+                'topojson': self.read_topojson
+            }
+            # Error detection
+            if not os.path.exists(infile):
+                raise ValueError('File path does not exist: %s' % infile)
 
-        # Error detection
-        if not os.path.exists(infile):
-            raise ValueError('File path does not exist: %s' % infile)
+            if extension not in read_file:
+                raise ValueError('etl2osm cannot read file extension: %s' % extension)
 
-        if extension not in read_file:
-            raise ValueError('etl2osm cannot read file extension: %s' % extension)
-
-        read_file[extension](infile, **kwargs)
+            read_file[extension](infile, **kwargs)
 
     def __len__(self):
         return len(self.features)
@@ -96,53 +98,56 @@ class Extract(Load):
         """Reads a GeoJSON and gives the results in GeoJSON format"""
 
         logging.info('Reading GeoJSON: %s' % infile)
-        with open(infile) as f:
-            geojson = json.load(f)
+        if isinstance(infile, dict):
+            geojson = infile
+        else:
+            with open(infile) as f:
+                geojson = json.load(f)
 
-            if 'type' not in geojson:
-                raise ValueError('GeoJSON must contain a [type] "FeatureCollection" or "Feature"')
-            if 'crs' not in geojson:
-                logging.warning('Coordinate Reference System was not detected (default=EPSG:4326)')
-                self.epsg = 'EPSG:4326'
+        if 'type' not in geojson:
+            raise ValueError('GeoJSON must contain a [type] "FeatureCollection" or "Feature"')
+        if 'crs' not in geojson:
+            logging.warning('Coordinate Reference System was not detected (default=EPSG:4326)')
+            self.epsg = 'EPSG:4326'
+        else:
+            self.epsg = 'EPSG:{}'.format(extract_epsg(geojson['crs']))
+
+        # Read Feature Collection
+        if geojson['type'] == 'FeatureCollection':
+            if not geojson['features']:
+                raise ValueError('FeatureCollection has [0] features.')
+
+            # --------->>>>>>>---------------------------
+            # GeoJSON properties NEEDS IMPROVEMENTS:
+            # - Add appropriate datatype (int/float,str)
+            # - Scan geojson for all available attributes
+            # - Data may contain multiple geometries
+            # --------->>>>>>>---------------------------
+
+            """
+            if 'geometry' in geojson['features'][0]:
+                self.geometry = geojson['features'][0]['geometry']['type']
             else:
-                self.epsg = 'EPSG:{}'.format(extract_epsg(geojson['crs']))
+                self.geometry = "Unknown"
+                logging.warning('Could not find [geometry] in feature.')
+            """
+            properties = set()
+            self.geometry = set()
 
-            # Read Feature Collection
-            if geojson['type'] == 'FeatureCollection':
-                if not geojson['features']:
-                    raise ValueError('FeatureCollection has [0] features.')
+            for feature in geojson['features']:
+                # Add unique attribute keys to properties
+                if 'properties' in feature:
+                    properties.update(feature['properties'].keys())
 
-                # --------->>>>>>>---------------------------
-                # GeoJSON properties NEEDS IMPROVEMENTS:
-                # - Add appropriate datatype (int/float,str)
-                # - Scan geojson for all available attributes
-                # - Data may contain multiple geometries
-                # --------->>>>>>>---------------------------
-
-                """
-                if 'geometry' in geojson['features'][0]:
-                    self.geometry = geojson['features'][0]['geometry']['type']
+                # Only add features with geometry
+                if feature.get('geometry'):
+                    self.features.append(feature)
+                    self.geometry.update([feature['geometry']['type']])
                 else:
-                    self.geometry = "Unknown"
                     logging.warning('Could not find [geometry] in feature.')
-                """
-                properties = set()
-                self.geometry = set()
 
-                for feature in geojson['features']:
-                    # Add unique attribute keys to properties
-                    if 'properties' in feature:
-                        properties.update(feature['properties'].keys())
-
-                    # Only add features with geometry
-                    if feature.get('geometry'):
-                        self.features.append(feature)
-                        self.geometry.update([feature['geometry']['type']])
-                    else:
-                        logging.warning('Could not find [geometry] in feature.')
-
-                # Creating basic properties for attribute table when building a shapefile.
-                self.properties = dict((key, 'str') for key in properties)
+            # Creating basic properties for attribute table when building a shapefile.
+            self.properties = dict((key, 'str') for key in properties)
 
     def read_topojson(self, infile, **kwargs):
         """Reads a TopoJSON and gives the results in GeoJSON format"""

@@ -88,6 +88,15 @@ def test_extract_lake_county_roads():
     assert len(data)
 
 
+def test_extract_multi_point():
+    feature = {
+        "type": "Feature",
+        "geometry": {
+            "type": "MultiPoint",
+            "coordinates": [[100.0, 0.0], [101.0, 1.0]]
+        }
+    }
+    print etl2osm.extract(feature)
+
 if __name__ == '__main__':
-    test_extract_geojson()
-    test_extract_kml()
+    test_extract_multi_point()
