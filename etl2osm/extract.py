@@ -14,7 +14,7 @@ class Extract(Load):
         # Reset Values
         self.features = []
         self.wkt = ''
-        self.epsg = ''
+        self.epsg = 'EPSG:4326'
         extension = os.path.splitext(infile)[1][1:]
 
         read_file = {
@@ -105,7 +105,7 @@ class Extract(Load):
                 logging.warning('Coordinate Reference System was not detected (default=EPSG:4326)')
                 self.epsg = 'EPSG:4326'
             else:
-                self.epsg = 'EPSG:{0}'.format(extract_epsg(geojson['crs']))
+                self.epsg = 'EPSG:{}'.format(extract_epsg(geojson['crs']))
 
             # Read Feature Collection
             if geojson['type'] == 'FeatureCollection':
@@ -166,14 +166,20 @@ class Extract(Load):
         """ Transform the data using the config file """
 
         self.config = read_config(config)
+        if 'crs_target' in kwargs:
+            self.crs_target = kwargs.pop('crs_target', 'EPSG:4326')
+            self.epsg = self.crs_target
+        else:
+            self.crs_target = 'EPSG:4326'
+            self.epsg = 'EPSG:4326'
+            self.wkt = osr.SRS_WKT_WGS84
 
         if config:
             self.properties = config_to_properties(self.config)
 
         for x, feature in enumerate(self.features):
-            # Reproject data to WGS84
-            if not self.epsg == 'ESPG:4326':
-                feature = reproject(feature, self.crs, osr.SRS_WKT_WGS84, **kwargs)
+            # Reproject data to target projection (crs_target=4326)
+            feature = reproject(feature, self.crs, self.crs_target, **kwargs)
 
             # Transform Columns
             if self.config:
@@ -181,9 +187,6 @@ class Extract(Load):
 
             # Save feature to self
             self[x] = feature
-
-        self.epsg = 'EPSG:4326'
-        self.wkt = osr.SRS_WKT_WGS84
 
 
 if __name__ == '__main__':

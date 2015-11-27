@@ -271,6 +271,7 @@ def test_transform_geojson():
 
 def test_transform_geojson_config():
     data = etl2osm.extract(roads['lake_county'])
+    data.transform()
     assert data[0]['properties']['FullStreet'] == u'LENZE DR'
     assert data[0]['properties']['NumberOfLa'] == u'2'
 
@@ -299,4 +300,5 @@ if __name__ == '__main__':
     # test_transform_int()
     # test_transform_float()
     # test_transform_geojson_config()
-    test_transform_clean_direction()
+    test_transform_geojson_config()
+    test_reproject_polygon_holes()
