@@ -96,7 +96,33 @@ def test_extract_multi_point():
             "coordinates": [[100.0, 0.0], [101.0, 1.0]]
         }
     }
-    print etl2osm.extract(feature)
+    data = etl2osm.extract(feature)
+    assert data[0]['geometry']['type'] == 'MultiPoint'
+
+
+def test_extract_point():
+    feature = {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [100.0, 0.0]
+        }
+    }
+    data = etl2osm.extract(feature)
+    assert data[0]['geometry']['type'] == 'Point'
+
+
+def test_extract_multi_point_to_point():
+    feature = {
+        "type": "Feature",
+        "geometry": {
+            "type": "MultiPoint",
+            "coordinates": [[100.0, 0.0]]
+        }
+    }
+    data = etl2osm.extract(feature)
+    assert data[0]['geometry']['type'] == 'Point'
+
 
 if __name__ == '__main__':
-    test_extract_multi_point()
+    test_extract_multi_point_to_point()

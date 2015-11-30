@@ -292,6 +292,16 @@ def test_transform_config_to_properties():
         etl2osm.config_to_properties(config['no-conform'])
 
 
+def test_transform_confirm_geometry():
+    feature = {
+        "type": "Feature",
+        "geometry": {
+            "type": "MultiPoint",
+            "coordinates": [[100.0, 0.0]]
+        }
+    }
+    print etl2osm.confirm_geometry(feature)
+
 if __name__ == '__main__':
     # test_transform_columns_basic()
     # test_transform_regex()
@@ -300,5 +310,4 @@ if __name__ == '__main__':
     # test_transform_int()
     # test_transform_float()
     # test_transform_geojson_config()
-    test_transform_geojson_config()
-    test_reproject_polygon_holes()
+    test_transform_confirm_geometry()

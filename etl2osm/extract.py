@@ -4,7 +4,7 @@ import logging
 import os
 import fiona
 import json
-from etl2osm.transform import reproject, transform_columns, read_config, extract_epsg, config_to_properties
+from etl2osm.transform import reproject, transform_columns, read_config, extract_epsg, config_to_properties, confirm_geometry
 from etl2osm.load import Load
 from osgeo import osr
 
@@ -90,6 +90,7 @@ class Extract(Load):
                 for feature in source:
                     if feature:
                         if feature['geometry']:
+                            feature = confirm_geometry(feature)
                             self.features.append(feature)
                         else:
                             logging.warning('Could not find [geometry] in feature.')
@@ -112,42 +113,34 @@ class Extract(Load):
         else:
             self.epsg = 'EPSG:{}'.format(extract_epsg(geojson['crs']))
 
-        # Read Feature Collection
+        # Read GeoJSON Feature Collection
         if geojson['type'] == 'FeatureCollection':
             if not geojson['features']:
                 raise ValueError('FeatureCollection has [0] features.')
+            features = geojson['features']
 
-            # --------->>>>>>>---------------------------
-            # GeoJSON properties NEEDS IMPROVEMENTS:
-            # - Add appropriate datatype (int/float,str)
-            # - Scan geojson for all available attributes
-            # - Data may contain multiple geometries
-            # --------->>>>>>>---------------------------
+        # Read Single GeoJSON Feature
+        elif geojson['type'] == 'Feature':
+            features = [geojson]
 
-            """
-            if 'geometry' in geojson['features'][0]:
-                self.geometry = geojson['features'][0]['geometry']['type']
+        properties = set()
+        self.geometry = set()
+
+        for feature in features:
+            # Add unique attribute keys to properties
+            if 'properties' in feature:
+                properties.update(feature['properties'].keys())
+
+            # Only add features with geometry
+            if feature.get('geometry'):
+                feature = confirm_geometry(feature)
+                self.features.append(feature)
+                self.geometry.update([feature['geometry']['type']])
             else:
-                self.geometry = "Unknown"
                 logging.warning('Could not find [geometry] in feature.')
-            """
-            properties = set()
-            self.geometry = set()
 
-            for feature in geojson['features']:
-                # Add unique attribute keys to properties
-                if 'properties' in feature:
-                    properties.update(feature['properties'].keys())
-
-                # Only add features with geometry
-                if feature.get('geometry'):
-                    self.features.append(feature)
-                    self.geometry.update([feature['geometry']['type']])
-                else:
-                    logging.warning('Could not find [geometry] in feature.')
-
-            # Creating basic properties for attribute table when building a shapefile.
-            self.properties = dict((key, 'str') for key in properties)
+        # Creating basic properties for attribute table when building a shapefile.
+        self.properties = dict((key, 'str') for key in properties)
 
     def read_topojson(self, infile, **kwargs):
         """Reads a TopoJSON and gives the results in GeoJSON format"""
@@ -183,6 +176,9 @@ class Extract(Load):
             self.properties = config_to_properties(self.config)
 
         for x, feature in enumerate(self.features):
+            # Detect if correct geometry (Multipoints > Point)
+            feature = confirm_geometry(feature)
+
             # Reproject data to target projection (crs_target=4326)
             feature = reproject(feature, self.crs, self.crs_target, **kwargs)
 

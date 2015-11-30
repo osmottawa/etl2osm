@@ -13,6 +13,18 @@ from osgeo import osr, ogr
 true_list = ['True', 'true', '1', True, 1]
 
 
+def confirm_geometry(feature):
+    geom = feature['geometry']
+    coord = geom['coordinates']
+
+    if feature['geometry']['type'] == 'MultiPoint':
+        if len(coord) == 1:
+            feature['geometry']['coordinates'] = coord[0]
+            feature['geometry']['type'] = 'Point'
+            logging.warning('Geometry changed: MultiPoint >> Point.')
+    return feature
+
+
 def load_json(model, **kwargs):
     if model in kwargs:
         model = kwargs[model]
