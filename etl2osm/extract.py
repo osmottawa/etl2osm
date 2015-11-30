@@ -165,9 +165,10 @@ class Extract(Load):
         """ Transform the data using the config file """
 
         self.config = read_config(config)
+        crs_source = self.crs
         if 'crs_target' in kwargs:
             crs_target = kwargs.pop('crs_target', 'EPSG:4326')
-            self.epsg = self.crs_target
+            self.epsg = crs_target
         else:
             crs_target = 'EPSG:4326'
             self.epsg = 'EPSG:4326'
@@ -181,7 +182,7 @@ class Extract(Load):
             feature = confirm_geometry(feature)
 
             # Reproject data to target projection (crs_target=4326)
-            feature = reproject(feature, self.crs, crs_target, **kwargs)
+            feature = reproject(feature, crs_source, crs_target, **kwargs)
 
             # Transform Columns
             if self.config:
