@@ -12,7 +12,8 @@ geojson = {
     'no-geometry': os.path.join(root, "tests/geojson/no-geometry.geojson")
 }
 shapefile = {
-    'no-geometry': os.path.join(root, "tests/shapefile/no-geometry.shp")
+    'no-geometry': os.path.join(root, "tests/shapefile/no-geometry.shp"),
+    'utm_projection': os.path.join(root, "tests/shapefile/utm_projection.shp")
 }
 
 roads = {

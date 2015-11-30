@@ -13,8 +13,8 @@ class Extract(Load):
     def __init__(self, infile, **kwargs):
         # Reset Values
         self.features = []
-        self.wkt = ''
-        self.epsg = 'EPSG:4326'
+        self.wkt = None
+        self.epsg = None
 
         if isinstance(infile, dict):
             self.read_geojson(infile)
@@ -80,12 +80,13 @@ class Extract(Load):
             with fiona.open(infile) as source:
                 self.geometry = set([source.meta['schema']['geometry']])
                 self.properties = source.meta['schema']['properties']
-                self.wkt = source.meta['crs_wkt']
 
                 # Read EPSG
                 crs = source.meta['crs']
                 if 'init' in crs:
                     self.epsg = crs['init'].upper()
+                else:
+                    self.wkt = source.meta['crs_wkt']
 
                 for feature in source:
                     if feature:
@@ -165,10 +166,10 @@ class Extract(Load):
 
         self.config = read_config(config)
         if 'crs_target' in kwargs:
-            self.crs_target = kwargs.pop('crs_target', 'EPSG:4326')
+            crs_target = kwargs.pop('crs_target', 'EPSG:4326')
             self.epsg = self.crs_target
         else:
-            self.crs_target = 'EPSG:4326'
+            crs_target = 'EPSG:4326'
             self.epsg = 'EPSG:4326'
             self.wkt = osr.SRS_WKT_WGS84
 
@@ -180,7 +181,7 @@ class Extract(Load):
             feature = confirm_geometry(feature)
 
             # Reproject data to target projection (crs_target=4326)
-            feature = reproject(feature, self.crs, self.crs_target, **kwargs)
+            feature = reproject(feature, self.crs, crs_target, **kwargs)
 
             # Transform Columns
             if self.config:

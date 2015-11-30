@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import etl2osm
 import pytest
-from test_variables import roads, crs
+from test_variables import roads, crs, shapefile
 
 
 def test_extract_topojson():
@@ -75,7 +75,6 @@ def test_extract_geojson_crs():
 
 def test_extract_shapefile():
     data = etl2osm.extract(roads['shp'])
-    assert data.wkt
     assert data.epsg == 'EPSG:4326'
     assert data.crs
     assert data.geojson
@@ -124,5 +123,12 @@ def test_extract_multi_point_to_point():
     assert data[0]['geometry']['type'] == 'Point'
 
 
+def test_extract_shapefile_utm():
+    data = etl2osm.extract(shapefile['utm_projection'])
+    assert data.epsg != 'EPSG:4326'
+    data.transform()
+    assert data.epsg == 'EPSG:4326'
+
+
 if __name__ == '__main__':
-    test_extract_multi_point_to_point()
+    test_extract_shapefile()

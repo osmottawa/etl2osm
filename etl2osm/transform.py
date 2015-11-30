@@ -105,9 +105,9 @@ def get_coordinate_rerefence_system(crs):
 
 def extract_epsg(crs):
     if isinstance(crs, (string_types, binary_type)):
-        crs = crs.lower()
-        if 'epsg:' in crs:
-            return int(crs.replace('epsg:', ''))
+        if 'epsg:' in crs.lower():
+            return int(crs.lower().replace('epsg:', ''))
+        return crs
     if isinstance(crs, dict):
         if crs['type'] == 'name':
             if 'properties' in crs:
