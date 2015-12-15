@@ -17,11 +17,13 @@
     },
     "license": "Public Domain",
     "conform": {
-        "addr:street": [
+        "name": [
             {"function": "direction", "field":"DIRECTION"},
             {"function": "title", "field": "ST_NAME"},
             {"function": "suffix", "field": "ST_EXT"}
         ],
-        "maxspeed": {"function":"mph", "field": "Speed_Limi"}
+        "maxspeed": {"function":"mph", "field": "Speed_Limi"},
+        "source": {"text": "Sumter County"},
+        "highway": {"text": "residential"}
     }
 }
