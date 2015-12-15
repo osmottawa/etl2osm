@@ -85,7 +85,7 @@ class Extract(Load):
                 crs = source.meta['crs']
                 if 'init' in crs:
                     self.epsg = crs['init'].upper()
-                else:
+                elif 'crs_wkt' in source.meta:
                     self.wkt = source.meta['crs_wkt']
 
                 for feature in source:

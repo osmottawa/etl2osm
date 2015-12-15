@@ -4,9 +4,7 @@
 #
 #    pip-compile requirements.in
 #
-click-plugins==1.0.2      # via fiona
 click==5.1
-cligj==0.3.0              # via fiona
-fiona==1.6.2
-six==1.10.0
-lxml==3.4.4
+fiona
+six
+lxml

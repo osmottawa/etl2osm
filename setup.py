@@ -19,7 +19,7 @@ if not version:
 with open('README.md', 'r', 'utf-8') as f:
     readme = f.read()
 
-requires = ['click==5.1', 'six==1.10.0', 'lxml==3.4.4', 'fiona==1.6.2']
+requires = ['click==5.1', 'six==1.10.0', 'lxml', 'fiona']
 
 setup(
     name='etl2osm',
