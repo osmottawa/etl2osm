@@ -6,22 +6,32 @@ import etl2osm
 
 def test_speed_extract_geojson(infile=roads['geojson']):
     """
-    GeoJSON: 50 ms/feature
+    Geometry: set([u'LineString']) | count: 17057 | time: 36 ms/feature
+    Geometry: set([u'LineString']) | count: 3 | time: 55 ms/feature
     """
     before = datetime.now()
     data = etl2osm.extract(infile)
     microseconds = (datetime.now() - before).microseconds
-    print 'count: {} | time: {} ms/feature'.format(len(data), microseconds / len(data))
+    print 'Geometry: {} | count: {} | time: {} ms/feature'.format(
+        data.geometry,
+        len(data),
+        microseconds / len(data)
+    )
 
 
 def test_speed_extract_shapefile(infile=roads['shp']):
     """
-    Shapefile: 250~500 ms/feature
+    Geometry: set(['LineString']) | count: 3 | time: 302 ms/feature
+    Geometry: set(['Polygon']) | count: 106218 | time: 1 ms/feature
     """
     before = datetime.now()
     data = etl2osm.extract(infile)
     microseconds = (datetime.now() - before).microseconds
-    print 'count: {} | time: {} ms/feature'.format(len(data), microseconds / len(data))
+    print 'Geometry: {} | count: {} | time: {} ms/feature'.format(
+        data.geometry,
+        len(data),
+        microseconds / len(data)
+    )
 
 
 def test_speed_transform_false(infile=roads['geojson']):
@@ -59,6 +69,7 @@ def test_speed_transform_true(infile=roads['geojson']):
 
 
 if __name__ == '__main__':
-    infile = '/home/denis/Downloads/canvec_021G_shp/fo_1080019_2.shp'
+
+    infile = '/home/denis/Downloads/canvec_021G_shp/hd_1480009_2.shp'
     for i in range(5):
-        test_speed_transform_true(infile=infile)
+        test_speed_transform_true(infile)

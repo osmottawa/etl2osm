@@ -12,6 +12,7 @@ from osgeo import osr, ogr
 true_list = ['True', 'true', '1', True, 1]
 models = Models()
 POINT = ogr.Geometry(ogr.wkbPoint)
+SpatialReferenceType = osr.SpatialReference().__class__
 
 
 def confirm_geometry(feature):
@@ -100,13 +101,13 @@ def extract_epsg(crs):
 
 def reproject(feature, crs_source, crs_target=4326, **kwargs):
     # Source Projection
-    if type(crs_source) == type(osr.SpatialReference()):
+    if isinstance(crs_source, SpatialReferenceType):
         p1 = crs_source
     else:
         p1 = get_coordinate_rerefence_system(extract_epsg(crs_source))
 
     # Output Projection (WGS84)
-    if type(crs_source) == type(osr.SpatialReference()):
+    if isinstance(crs_source, SpatialReferenceType):
         p2 = crs_target
     else:
         p2 = get_coordinate_rerefence_system(extract_epsg(crs_target))
