@@ -1,37 +1,64 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-from test_variables import config, roads
+from test_variables import roads
 import etl2osm
 
-infile = roads['geojson']
-outfile = 'tmp-file.geojson'
-config = config['lake_county']['roads']
 
-
-def test_speed_extract():
+def test_speed_extract_geojson(infile=roads['geojson']):
     """
-    4x GeoJSON = 0.091 ms/feature
-    1x Shapefile = 0.35 ms/feature
+    GeoJSON: 50 ms/feature
     """
     before = datetime.now()
-    extract = etl2osm.extract(infile)
-    print 'count: {} | time: {} ms/feature'.format(len(extract), (datetime.now() - before) / len(extract) * 1000)
+    data = etl2osm.extract(infile)
+    microseconds = (datetime.now() - before).microseconds
+    print 'count: {} | time: {} ms/feature'.format(len(data), microseconds / len(data))
 
 
-def test_speed_transform():
+def test_speed_extract_shapefile(infile=roads['shp']):
     """
-    1x    With Reprojecting = 1.944 ms/feature
-    2000x Without Reprojecting = 0.001 ms/feature
+    Shapefile: 250~500 ms/feature
     """
-    extract = etl2osm.extract(infile)
     before = datetime.now()
-    print extract.epsg
-    extract.transform(reproject=False)
-    print 'count: {} | time: {} ms/feature'.format(len(extract), (datetime.now() - before) / len(extract) * 1000)
+    data = etl2osm.extract(infile)
+    microseconds = (datetime.now() - before).microseconds
+    print 'count: {} | time: {} ms/feature'.format(len(data), microseconds / len(data))
 
+
+def test_speed_transform_false(infile=roads['geojson']):
+    """
+    Geometry: set(['LineString']) | Reproject: False | count: 18809 | time: 1 ms/feature
+    Geometry: set(['Point']) | Reproject: False | count: 31478 | time: 1 ms/feature
+    Geometry: set(['Polygon']) | Reproject: False | count: 106218 | time: 1 ms/feature
+    """
+    data = etl2osm.extract(infile)
     before = datetime.now()
-    extract.transform(reproject=True)
-    print 'count: {} | time: {} ms/feature'.format(len(extract), (datetime.now() - before) / len(extract) * 1000)
+    data.transform(reproject=False)
+    microseconds = (datetime.now() - before).microseconds
+    print 'Geometry: {} | Reproject: False | count: {} | time: {} ms/feature'.format(
+        data.geometry,
+        len(data),
+        microseconds / len(data)
+    )
+
+
+def test_speed_transform_true(infile=roads['geojson']):
+    """
+    Geometry: set(['Point']) | Reproject: True | count: 31478 | time: 10 ms/feature
+    Geometry: set(['LineString']) | Reproject: True | count: 18809 | time: 26 ms/feature
+    Geometry: set(['Polygon']) | Reproject: True | count: 106218 | time: 3 ms/feature
+    """
+    data = etl2osm.extract(infile)
+    before = datetime.now()
+    data.transform(reproject=True)
+    microseconds = (datetime.now() - before).microseconds
+    print 'Geometry: {} | Reproject: True | count: {} | time: {} ms/feature'.format(
+        data.geometry,
+        len(data),
+        microseconds / len(data)
+    )
+
 
 if __name__ == '__main__':
-    test_speed_transform()
+    infile = '/home/denis/Downloads/canvec_021G_shp/fo_1080019_2.shp'
+    for i in range(5):
+        test_speed_transform_true(infile=infile)

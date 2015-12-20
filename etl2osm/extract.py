@@ -9,7 +9,8 @@ from etl2osm.transform import (reproject,
                                read_config,
                                extract_epsg,
                                config_to_properties,
-                               confirm_geometry)
+                               confirm_geometry,
+                               get_coordinate_rerefence_system)
 from etl2osm.load import Load
 from osgeo import osr
 
@@ -173,7 +174,7 @@ class Extract(Load):
         """ Transform the data using the config file """
 
         self.config = read_config(config)
-        crs_source = self.crs
+
         if 'crs_target' in kwargs:
             crs_target = kwargs.pop('crs_target', 'EPSG:4326')
             self.epsg = crs_target
@@ -181,6 +182,9 @@ class Extract(Load):
             crs_target = 'EPSG:4326'
             self.epsg = 'EPSG:4326'
             self.wkt = osr.SRS_WKT_WGS84
+
+        crs_target = get_coordinate_rerefence_system(extract_epsg(crs_target))
+        crs_source = get_coordinate_rerefence_system(extract_epsg(self.crs))
 
         if config:
             self.properties = config_to_properties(self.config)

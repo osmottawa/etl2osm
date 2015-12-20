@@ -11,6 +11,7 @@ from osgeo import osr, ogr
 
 true_list = ['True', 'true', '1', True, 1]
 models = Models()
+POINT = ogr.Geometry(ogr.wkbPoint)
 
 
 def confirm_geometry(feature):
@@ -99,10 +100,19 @@ def extract_epsg(crs):
 
 def reproject(feature, crs_source, crs_target=4326, **kwargs):
     # Source Projection
-    p1 = get_coordinate_rerefence_system(extract_epsg(crs_source))
+    if type(crs_source) == type(osr.SpatialReference()):
+        p1 = crs_source
+    else:
+        p1 = get_coordinate_rerefence_system(extract_epsg(crs_source))
 
     # Output Projection (WGS84)
-    p2 = get_coordinate_rerefence_system(extract_epsg(crs_target))
+    if type(crs_source) == type(osr.SpatialReference()):
+        p2 = crs_target
+    else:
+        p2 = get_coordinate_rerefence_system(extract_epsg(crs_target))
+
+    # Define Coordinate Transformation
+    coord_trans = osr.CoordinateTransformation(p1, p2)
 
     geom = feature['geometry']
     coord = feature['geometry']['coordinates']
@@ -117,48 +127,48 @@ def reproject(feature, crs_source, crs_target=4326, **kwargs):
 
     if geom['type'] not in convert:
         raise ValueError('Reproject geometry type not implemented: %s' % geom['type'])
-    feature['geometry']['coordinates'] = convert[geom['type']](p1, p2, coord)
+    feature['geometry']['coordinates'] = convert[geom['type']](p1, p2, coord, coord_trans)
 
     return feature
 
 
-def convert_point(p1, p2, coord):
-    coord_trans = osr.CoordinateTransformation(p1, p2)
-    point = ogr.Geometry(ogr.wkbPoint)
-    point.AddPoint(coord[0], coord[1])
-    point.Transform(coord_trans)
+def convert_point(p1, p2, coord, coord_trans=''):
+    if not coord_trans:
+        coord_trans = osr.CoordinateTransformation(p1, p2)
+    POINT.AddPoint(coord[0], coord[1])
+    POINT.Transform(coord_trans)
 
-    return point.GetPoint_2D()
+    return POINT.GetPoint_2D()
 
 
-def convert_multi_point(p1, p2, coord):
+def convert_multi_point(p1, p2, coord, coord_trans=''):
     multi_point = []
     for point in coord:
-        multi_point.append(convert_point(p1, p2, point))
+        multi_point.append(convert_point(p1, p2, point, coord_trans))
 
     return multi_point
 
 
-def convert_multi_linestring(p1, p2, coord):
+def convert_multi_linestring(p1, p2, coord, coord_trans=''):
     multi_line = []
     for line in coord:
-        multi_line.append(convert_linestring(p1, p2, line))
+        multi_line.append(convert_linestring(p1, p2, line, coord_trans))
 
     return multi_line
 
 
-def convert_linestring(p1, p2, coord):
+def convert_linestring(p1, p2, coord, coord_trans=''):
     line = []
     for point in coord:
-        line.append(convert_point(p1, p2, point))
+        line.append(convert_point(p1, p2, point, coord_trans))
 
     return line
 
 
-def convert_polygon(p1, p2, coord):
+def convert_polygon(p1, p2, coord, coord_trans=''):
     polygon = []
     for line in coord:
-        polygon.append(convert_linestring(p1, p2, line))
+        polygon.append(convert_linestring(p1, p2, line, coord_trans))
 
     return polygon
 
