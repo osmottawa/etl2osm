@@ -9,6 +9,7 @@ from six import string_types, binary_type
 from collections import OrderedDict
 from osgeo import osr, ogr
 
+
 true_list = ['True', 'true', '1', True, 1]
 models = Models()
 POINT = ogr.Geometry(ogr.wkbPoint)
@@ -134,10 +135,14 @@ def reproject(feature, crs_source, crs_target=4326, **kwargs):
 
 
 def convert_point(p1, p2, coord, coord_trans=''):
-    if not coord_trans:
-        coord_trans = osr.CoordinateTransformation(p1, p2)
+    # Add point to GDAL point schema
     POINT.AddPoint(coord[0], coord[1])
-    POINT.Transform(coord_trans)
+
+    # Only reproject if projections are different
+    if not p1.IsSame(p2):
+        if not coord_trans:
+            coord_trans = osr.CoordinateTransformation(p1, p2)
+        POINT.Transform(coord_trans)
 
     return POINT.GetPoint_2D()
 
