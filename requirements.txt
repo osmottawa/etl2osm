@@ -8,3 +8,4 @@ click==5.1
 fiona
 six
 lxml
+pyyaml

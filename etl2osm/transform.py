@@ -4,13 +4,14 @@ import os
 import re
 import json
 import logging
-import etl2osm
+from etl2osm.models import Models
 from six import string_types, binary_type
 from collections import OrderedDict
 from osgeo import osr, ogr
 
 
 true_list = ['True', 'true', '1', True, 1]
+models = Models()
 
 
 def confirm_geometry(feature):
@@ -23,28 +24,6 @@ def confirm_geometry(feature):
             feature['geometry']['type'] = 'Point'
             logging.warning('Geometry changed: MultiPoint >> Point.')
     return feature
-
-
-def load_json(model, **kwargs):
-    if model in kwargs:
-        model = kwargs[model]
-
-    # Model is already in JSON format
-    if isinstance(model, (dict, list, tuple)):
-        return model
-    else:
-        # Find user defined file path
-        if os.path.exists(model):
-            with open(model) as f:
-                return json.load(f)
-
-        # Look inside etl2osm [models] folder for .json files
-        root = os.path.dirname(etl2osm.__file__)[:-len('etl2osm')]
-        path = os.path.join(root, 'etl2osm', 'models', model)
-
-        if os.path.exists(path):
-            with open(path) as f:
-                return json.load(f)
 
 
 def regex_strip(value):
@@ -200,7 +179,7 @@ def titlecase_except(value, **kwargs):
         final = []
 
         for word in word_list:
-            if word in load_json('title_except.json', **kwargs):
+            if word in models['title_except']:
                 final.append(word)
             else:
                 final.append(word.capitalize())
@@ -267,7 +246,7 @@ def clean_field(properties, conform, **kwargs):
 
         # Replaces the abreviated suffix (AVE=Avenue)
         elif 'suffix' in conform['function']:
-            suffix = load_json('suffix.json', **kwargs)
+            suffix = models['suffix']
 
             if 'field' not in conform:
                 raise ValueError('[field] is missing using the Suffix Attribute Function.')
@@ -279,7 +258,7 @@ def clean_field(properties, conform, **kwargs):
 
         # Replaces the abreviated directions (NE=Northeast)
         elif 'direction' in conform['function']:
-            direction = load_json('direction.json', **kwargs)
+            direction = models['direction']
 
             if 'field' not in conform:
                 raise ValueError('[field] is missing using the Direction Attribute Function.')

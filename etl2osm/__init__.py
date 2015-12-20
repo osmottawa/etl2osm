@@ -12,3 +12,4 @@ __copyright__ = 'Copyright (c) 2015 OSM Canada Team'
 from etl2osm.cli import cli  # noqa
 from etl2osm.api import process, extract  # noqa
 from etl2osm.transform import reproject, transform_columns, clean_field, config_to_properties, confirm_geometry  # noqa
+from etl2osm.models import Models  # noqa

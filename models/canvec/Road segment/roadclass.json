@@ -1,0 +1,15 @@
+{
+    "1": "Freeway",
+    "2": "Expressway/Highway",
+    "3": "Arterial",
+    "4": "Collector",
+    "5": "Local/Street",
+    "6": "Local/Strata",
+    "7": "Local/Unknown",
+    "8": "Alleyway/Lane",
+    "9": "Ramp",
+    "10": "Resource/Recreation",
+    "11": "Rapid transit",
+    "12": "Service lane",
+    "13": "Winter"
+}
