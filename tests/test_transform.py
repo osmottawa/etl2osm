@@ -310,4 +310,4 @@ if __name__ == '__main__':
     # test_transform_int()
     # test_transform_float()
     # test_transform_geojson_config()
-    test_transform_confirm_geometry()
+    test_reproject_point()

@@ -4,7 +4,12 @@ import logging
 import os
 import fiona
 import json
-from etl2osm.transform import reproject, transform_columns, read_config, extract_epsg, config_to_properties, confirm_geometry
+from etl2osm.transform import (reproject,
+                               transform_columns,
+                               read_config,
+                               extract_epsg,
+                               config_to_properties,
+                               confirm_geometry)
 from etl2osm.load import Load
 from osgeo import osr
 
@@ -72,7 +77,9 @@ class Extract(Load):
         return {"type": "FeatureCollection", "crs": self.crs, "features": self.features}
 
     def read_shp(self, infile, **kwargs):
-        """Reads a Shapefile and gives the results in GeoJSON format"""
+        """Reads a Shapefile and gives the results in GeoJSON format
+        Speed = 0.35ms/feature
+        """
 
         logging.info('Reading Shapefile: %s' % infile)
 
@@ -97,7 +104,8 @@ class Extract(Load):
                             logging.warning('Could not find [geometry] in feature.')
 
     def read_geojson(self, infile, **kwargs):
-        """Reads a GeoJSON and gives the results in GeoJSON format"""
+        """Reads a GeoJSON and gives the results in GeoJSON format
+        Speed = 0.091ms/feature"""
 
         logging.info('Reading GeoJSON: %s' % infile)
         if isinstance(infile, dict):
@@ -182,7 +190,8 @@ class Extract(Load):
             feature = confirm_geometry(feature)
 
             # Reproject data to target projection (crs_target=4326)
-            feature = reproject(feature, crs_source, crs_target, **kwargs)
+            if kwargs.get('reproject', True):
+                reproject(feature, crs_source, crs_target)
 
             # Transform Columns
             if self.config:

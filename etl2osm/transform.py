@@ -9,7 +9,6 @@ from six import string_types, binary_type
 from collections import OrderedDict
 from osgeo import osr, ogr
 
-
 true_list = ['True', 'true', '1', True, 1]
 models = Models()
 
@@ -84,9 +83,11 @@ def get_coordinate_rerefence_system(crs):
 
 def extract_epsg(crs):
     if isinstance(crs, (string_types, binary_type)):
-        if 'epsg:' in crs.lower():
-            return int(crs.lower().replace('epsg:', ''))
-        return crs
+        pattern = r'(epsg|EPSG):\D*(?P<epsg>\d+)'
+        match = re.search(pattern, crs)
+        if match:
+            return int(match.group('epsg'))
+
     if isinstance(crs, dict):
         if crs['type'] == 'name':
             if 'properties' in crs:
