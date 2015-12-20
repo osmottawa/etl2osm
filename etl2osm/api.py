@@ -13,7 +13,8 @@ def process(infile, config, outfile, **kwargs):
     """
 
     data = Extract(infile, **kwargs)
-    data.transform(config, **kwargs)
+    if config:
+        data.transform(config, **kwargs)
     data.save(outfile, **kwargs)
     return data
 

@@ -3,14 +3,17 @@ import os
 from test_variables import config, roads
 import subprocess
 
+infile = roads['lake_county']
+outfile = 'tmp-file.geojson'
+config = config['lake_county']['roads']
+
 
 def test_cli_process():
-    infile = roads['lake_county']
-    outfile = 'tmp-file.geojson'
-    lake_county = config['lake_county']['roads']
+    subprocess.call(['etl2osm', infile, '--config', config, '--outfile', outfile])
+    assert os.path.exists(outfile)
+    os.remove(outfile)
 
-    # Execute Process Command
-    subprocess.call(['etl2osm', infile, '--config', lake_county, '--outfile', outfile])
+    subprocess.call(['etl2osm', infile, '--outfile', outfile])
     assert os.path.exists(outfile)
     os.remove(outfile)
 
