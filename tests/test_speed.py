@@ -55,7 +55,9 @@ def test_speed_transform_true(infile=roads['geojson']):
     """
     Geometry: set(['Point']) | Reproject: True | count: 31478 | time: 10 ms/feature
     Geometry: set(['LineString']) | Reproject: True | count: 18809 | time: 26 ms/feature
+    Geometry: set(['LineString']) | Reproject: True | count: 7015 | time: 21 ms/feature
     Geometry: set(['Polygon']) | Reproject: True | count: 106218 | time: 3 ms/feature
+    Geometry: set(['Polygon']) | Reproject: True | count: 106218 | time: 5 ms/feature
     """
     data = etl2osm.extract(infile)
     before = datetime.now()
@@ -69,7 +71,16 @@ def test_speed_transform_true(infile=roads['geojson']):
 
 
 if __name__ == '__main__':
-
-    infile = '/home/denis/Downloads/canvec_021G_shp/hd_1480009_2.shp'
+    """
+    Geometry: set(['LineString']) | Reproject: True | count: 7015 | time: 8 ms/feature
+    Geometry: set(['LineString']) | Reproject: True | count: 7015 | time: 28 ms/feature
+    Geometry: set(['LineString']) | Reproject: True | count: 7015 | time: 26 ms/feature
+    Geometry: set(['LineString']) | Reproject: True | count: 7015 | time: 17 ms/feature
+    Geometry: set(['LineString']) | Reproject: True | count: 7015 | time: 32 ms/feature
+    Geometry: set(['LineString']) | Reproject: True | count: 7015 | time: 27 ms/feature
+    Geometry: set(['LineString']) | Reproject: True | count: 7015 | time: 31 ms/feature
+    Geometry: set(['LineString']) | Reproject: True | count: 7015 | time: 30 ms/feature
+    """
+    infile = '/home/denis/Downloads/canvec_021G_shp/hd_1470009_1.shp'
     for i in range(5):
         test_speed_transform_true(infile)
