@@ -1,7 +1,0 @@
-{
-    "conform": {
-        "str": "NUMBER_",
-        "int": {"int": "True", "field": "NUMBER_"},
-        "float": {"float": "True", "field": "NUMBER_"}
-    }
-}

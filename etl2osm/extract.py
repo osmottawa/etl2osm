@@ -4,9 +4,9 @@ import logging
 import os
 import fiona
 import json
+from etl2osm.models import Models
 from etl2osm.transform import (reproject,
                                transform_columns,
-                               read_config,
                                extract_epsg,
                                config_to_properties,
                                confirm_geometry,
@@ -173,7 +173,7 @@ class Extract(Load):
     def transform(self, config={}, **kwargs):
         """ Transform the data using the config file """
 
-        self.config = read_config(config)
+        self.config = Models(config).config
 
         if 'crs_target' in kwargs:
             crs_target = kwargs.pop('crs_target', 'EPSG:4326')

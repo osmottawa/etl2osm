@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
 import etl2osm
-import pytest
 from collections import OrderedDict
-from test_variables import wkt, epsg, crs, roads, config
+from test_variables import wkt, epsg, crs, roads
 
 
 root = os.path.dirname(etl2osm.__file__)[:-len('etl2osm')]
+models = etl2osm.Models()
 
 
 def test_reproject_point():
@@ -111,12 +111,7 @@ def test_reproject_geometry_collection():
 
 
 def test_transform_columns_string():
-    config = {
-        "conform": {
-            "address": "ADDRESS",
-            "number": "NUMBER",
-        }
-    }
+    conform = {"address": "ADDRESS", "number": "NUMBER"}
     feature = {
         "type": "Feature",
         "properties": {
@@ -131,130 +126,43 @@ def test_transform_columns_string():
             number="65"
         )
     }
-    feature = etl2osm.transform_columns(feature, config)
+    feature = etl2osm.transform_columns(feature, conform)
     assert feature == result
-
-
-def test_transform_columns_dict():
-    config = {
-        "conform": {
-            "number": {'field': "NUMBER", 'int': True}
-        }
-    }
-    feature = {
-        "type": "Feature",
-        "properties": {
-            "NUMBER": "65"
-        }
-    }
-    result = {
-        "type": "Feature",
-        "properties": OrderedDict(
-            number=65
-        )
-    }
-    feature = etl2osm.transform_columns(feature, config)
-    assert feature == result
-
-
-def test_transform_columns_list():
-    config = {
-        "conform": {
-            "street": ["NUMBER", "STREET"]
-        }
-    }
-    feature = {
-        "type": "Feature",
-        "properties": {
-            "NUMBER": "65",
-            "STREET": "Rideau Street"
-        }
-    }
-    result = {
-        "type": "Feature",
-        "properties": OrderedDict(
-            street="65 Rideau Street"
-        )
-    }
-    feature = etl2osm.transform_columns(feature, config)
-    assert feature == result
-
-
-def test_transform_clean_regex():
-    conform = {'function': 'regexp', 'field': 'NAME', 'pattern': '^([0-9]+)'}
-    properties = {'NAME': '65 Street Name'}
-    assert etl2osm.clean_field(properties, conform) == '65'
-
-
-def test_transform_clean_regex_replace():
-    conform = {'function': 'regexp', 'field': 'NAME', 'pattern': '^(HWY)', 'replace': 'Highway'}
-    properties = {'NAME': 'HWY 174'}
-    assert etl2osm.clean_field(properties, conform) == 'Highway 174'
-
-
-def test_transform_clean_regex_int():
-    conform = {'function': 'regexp', 'field': 'NAME', 'pattern': '^([0-9]+)', 'int': True}
-    properties = {'NAME': '65 Street Name'}
-    assert etl2osm.clean_field(properties, conform) == 65
-
-
-def test_transform_clean_int():
-    conform = {'field': 'NUMBER', 'int': True}
-    properties = {'NUMBER': '65'}
-    assert etl2osm.clean_field(properties, conform) == 65
-
-
-def test_transform_clean_float():
-    conform = {'field': 'NUMBER', 'float': True}
-    properties = {'NUMBER': '65.145'}
-    assert etl2osm.clean_field(properties, conform) == 65.145
-
-
-def test_transform_clean_join():
-    conform = {'function': 'join', 'fields': ["NUMBER", "STREET"], 'separator': ' - '}
-    properties = {'NUMBER': '65', 'STREET': "Rideau Street"}
-    assert etl2osm.clean_field(properties, conform) == '65 - Rideau Street'
 
 
 def test_transform_clean_suffix():
-    conform = {'function': 'suffix', 'field': "STREET"}
+    conform = {'model': 'suffix', 'field': "STREET"}
     properties = {'STREET': "AVE"}
-    path = os.path.join(root, 'tests', 'models', 'suffix.json')
+    model = etl2osm.Models()
+    model['suffix'] = {'AVE': 'Avenue'}
     assert etl2osm.clean_field(properties, conform) == 'Avenue'
-    assert etl2osm.clean_field(properties, conform, suffix={'AVE': 'Avenue'}) == 'Avenue'
-    assert etl2osm.clean_field(properties, conform, suffix=path) == 'Avenue'
+    assert etl2osm.clean_field(properties, conform, model={'AVE': 'Avenue'}) == 'Avenue'
+    assert etl2osm.clean_field(properties, conform, model=model) == 'Avenue'
 
 
 def test_transform_clean_direction():
-    conform = {'function': 'direction', 'field': "DIRECTION"}
+    conform = {'model': 'direction', 'field': "DIRECTION"}
     properties = {'DIRECTION': "NE"}
-    path = os.path.join(root, 'tests', 'models', 'direction.json')
+    model = etl2osm.Models()
+    model['direction'] = {'NE': 'Northeast'}
     assert etl2osm.clean_field(properties, conform) == 'Northeast'
-    assert etl2osm.clean_field(properties, conform, direction={'NE': 'Northeast'}) == 'Northeast'
-    assert etl2osm.clean_field(properties, conform, direction=path) == 'Northeast'
+    assert etl2osm.clean_field(properties, conform, model={'NE': 'Northeast'}) == 'Northeast'
+    assert etl2osm.clean_field(properties, conform, model=model) == 'Northeast'
 
 
 def test_transform_clean_title():
-    conform = {'function': 'title', 'field': "NAME"}
+    conform = {'title': True, 'field': "NAME"}
     properties = {'NAME': "3RD AVENUE"}
-    path = os.path.join(root, 'tests', 'models', 'title_except.json')
     assert etl2osm.clean_field(properties, conform) == '3rd Avenue'
-    assert etl2osm.clean_field(properties, conform, title_except=['rd']) == '3rd Avenue'
-    assert etl2osm.clean_field(properties, conform, title_except=path) == '3rd Avenue'
+    assert etl2osm.clean_field(properties, conform) == '3rd Avenue'
 
     properties = {'NAME': None}
     assert not etl2osm.clean_field(properties, conform)
 
     properties = {'NAME': 2}
     assert etl2osm.clean_field(properties, conform) == 2
-    assert etl2osm.clean_field(properties, conform, title_except=['rd']) == 2
-    assert etl2osm.clean_field(properties, conform, title_except=path) == 2
-
-
-def test_transform_clean_mph():
-    conform = {'function': 'mph', 'field': "SPEED"}
-    properties = {'SPEED': "55"}
-    assert etl2osm.clean_field(properties, conform) == '55 mph'
+    assert etl2osm.clean_field(properties, conform) == 2
+    assert etl2osm.clean_field(properties, conform) == 2
 
 
 def test_transform_clean_text():
@@ -267,29 +175,6 @@ def test_transform_geojson():
     data = etl2osm.extract(roads['lake_county'])
     data.transform()
     assert data.epsg == 'EPSG:4326'
-
-
-def test_transform_geojson_config():
-    data = etl2osm.extract(roads['lake_county'])
-    data.transform()
-    assert data[0]['properties']['FullStreet'] == u'LENZE DR'
-    assert data[0]['properties']['NumberOfLa'] == u'2'
-
-    data.transform(config['lake_county']['roads'])
-    assert data[0]['properties']['street'] == 'Lenze Drive'
-    assert data[0]['properties']['lanes'] == 2
-    assert data.epsg == 'EPSG:4326'
-
-
-def test_transform_config_to_properties():
-    properties = etl2osm.config_to_properties(config['numbers'])
-    assert properties
-    assert properties['str'] == 'str'
-    assert properties['int'] == 'int'
-    assert properties['float'] == 'float'
-
-    with pytest.raises(ValueError):
-        etl2osm.config_to_properties(config['no-conform'])
 
 
 def test_transform_confirm_geometry():
@@ -310,4 +195,4 @@ if __name__ == '__main__':
     # test_transform_int()
     # test_transform_float()
     # test_transform_geojson_config()
-    test_reproject_point()
+    test_transform_clean_suffix()

@@ -14,7 +14,7 @@ def test_entry_points():
 
 def test_api_process():
     outfile = 'tmp-filepath.geojson'
-    data = etl2osm.process(roads['lake_county'], config['lake_county']['roads'], outfile)
+    data = etl2osm.process(roads['lake_county'], config={'foo': {'text': 'bar'}}, outfile)
     assert data.geojson
     assert data.epsg
     assert os.path.exists(outfile)

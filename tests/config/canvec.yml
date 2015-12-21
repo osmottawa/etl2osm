@@ -1,0 +1,23 @@
+# CanVec+ 2014
+# ============
+# Reference:
+# http://ftp2.cits.rncan.gc.ca/pub/canvec+/doc/CanVec+_feature_catalogue.pdf
+
+waterway:
+    field: permanency
+    model: permanency
+
+natural:
+    text: water
+
+source:
+    text: CanVec+
+
+"source:date":
+    text: 2014
+
+accuracy: accuracy
+
+name:
+    field: nameen
+    title: True

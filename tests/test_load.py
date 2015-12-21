@@ -55,7 +55,7 @@ def test_load_osm():
 def test_load_geojson():
     outfile = 'tmp-file.geojson'
     data = etl2osm.extract(roads['lake_county'])
-    data.transform(config['lake_county']['roads'])
+    data.transform(config={'foo': {'text': 'bar'}})
     data.save(outfile)
     assert os.path.exists(outfile)
     os.remove(outfile)
@@ -66,7 +66,7 @@ def test_load_shapefile():
     basename = os.path.splitext(outfile)[0]
 
     data = etl2osm.extract(roads['lake_county'])
-    data.transform(config['lake_county']['roads'])
+    data.transform(config={'foo': {'text': 'bar'}})
     data.save(outfile)
 
     for ext in ['.shp', '.cpg', '.dbf', '.prj', '.shx']:
@@ -76,6 +76,6 @@ def test_load_shapefile():
 
 if __name__ == '__main__':
     # test_load_geojson()
-    test_load_osm()
+    # test_load_osm()
     # test_load_kml()
-    # test_load_shapefile()
+    test_load_geojson()

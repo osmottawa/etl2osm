@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
-import os
 import re
-import json
 import logging
 from etl2osm.models import Models
 from six import string_types, binary_type
@@ -41,12 +39,9 @@ def regex_strip(value):
 
 def config_to_properties(config):
     properties = OrderedDict()
-    config = read_config(config)
+    config = Models(config).config
 
-    if 'conform' not in config:
-        raise ValueError('Config file missing [conform] to format attributes.')
-
-    for key, value in config['conform'].items():
+    for key, value in config.items():
         datatype = 'str'
 
         # If value is a dictionary, looking for {'int': True}
@@ -179,17 +174,6 @@ def convert_polygon(p1, p2, coord, coord_trans=''):
     return polygon
 
 
-def read_config(config):
-    if isinstance(config, dict):
-        return config
-
-    if not os.path.exists(config):
-        raise ValueError('Config file path does not exist: %s' % config)
-
-    with open(config) as f:
-        return json.load(f, object_pairs_hook=OrderedDict)
-
-
 def titlecase_except(value, **kwargs):
     if isinstance(value, (string_types, binary_type)):
         word_list = re.split(' ', value)
@@ -205,160 +189,77 @@ def titlecase_except(value, **kwargs):
     return value
 
 
-def clean_field(properties, conform, **kwargs):
-    if 'field' in conform:
-        # STRING
-        if isinstance(conform, dict):
-            field = conform['field']
-            if field not in properties:
-                raise ValueError('Cannot find attribute [%s] using the Attribute Function.' % field)
-            value = properties[field]
+def clean_field(properties, config, **kwargs):
+    # Standalone Text as Field
+    if isinstance(config, (string_types, binary_type)):
+        if config not in properties:
+            logging.warning('Cannot find attribute [%s] using the Attribute Function.' % config)
+        value = properties.get(config)
 
-    # DICT
-    elif isinstance(conform, (string_types, binary_type)):
-        field = conform
-        if field not in properties:
-            raise ValueError('Cannot find attribute [%s] using the Attribute Function.' % field)
-        value = properties[field]
+    else:
+        # REQUIRED: Define value using [field]
+        if 'field' in config:
+            if config['field'] not in properties:
+                logging.warning('Cannot find attribute [%s] using the Attribute Function.' % config)
+            value = properties.get(config['field'])
 
-    # LIST
-    elif isinstance(conform, (list, tuple)):
-        values = []
-        for field in conform:
-            value = clean_field(properties, field)
-            if value:
-                values.append(value)
-        value = ' '.join(values)
+        # Simple hard coded text
+        elif 'text' in config:
+            value = config['text']
+        else:
+            raise ValueError('Config must contain at least [field] OR [text].')
 
-    # LIST using Fields
-    elif 'fields' in conform:
-        value = []
-        for field in conform['fields']:
-            if field not in properties:
-                raise ValueError('Cannot find attribute [%s] using the Attribute Function.' % field)
-            value.append(properties[field])
-
-    # Attribute Functions
-    if 'function' in conform:
-
-        # Applies a Regex function match or replace from pattern.
-        if 'regexp' in conform['function']:
-            if 'field' not in conform:
-                raise ValueError('[field] is missing using the Regex Attribute Function.')
-            if 'pattern' not in conform:
-                raise ValueError('[pattern] is missing using the Regex Attribute Function.')
-            match = re.search(conform['pattern'], properties[field])
-            value = match.group()
-            if 'replace' in conform:
-                value = properties[field].replace(value, conform['replace'])
-
-        # Applies the Join attribute function
-        elif 'join' in conform['function']:
-            if 'fields' not in conform:
-                raise ValueError('[fields] are missing using the Join Attribute Function.')
-            if 'separator' not in conform:
-                logging.warning('[separator] is missing using the Join Attribute Function.')
-            separator = conform.get('separator', ' ')
-            value = separator.join(value)
-
-        # Replaces the abreviated suffix (AVE=Avenue)
-        elif 'suffix' in conform['function']:
-            suffix = models['suffix']
-
-            if 'field' not in conform:
-                raise ValueError('[field] is missing using the Suffix Attribute Function.')
-            if properties[field]:
-                if properties[field] not in suffix:
-                    logging.warning('Suffix cannot be found [%s] in ETL2OSM models.' % properties[field])
+        if 'model' in config:
+            if 'model' in kwargs:
+                # User inputed Models
+                model = Models(kwargs.get('model'))
+                if len(model) == 1:
+                    model = model.config
                 else:
-                    value = suffix[str(properties[field])]
-
-        # Replaces the abreviated directions (NE=Northeast)
-        elif 'direction' in conform['function']:
-            direction = models['direction']
-
-            if 'field' not in conform:
-                raise ValueError('[field] is missing using the Direction Attribute Function.')
-            if properties[field]:
-                if properties[field] not in direction:
-                    logging.warning('Direction cannot be found [%s] in ETL2OSM models.' % properties[field])
-                else:
-                    value = direction[str(properties[field])]
+                    model = model[config['model']]
+            else:
+                # Default Models
+                model = Models()[config['model']]
+            value = model.get(properties.get(config['field']))
 
         # Converts string to a nice Titlecase (3RD AVENUE=3rd Avenue)
-        elif 'title' in conform['function']:
-            if 'field' not in conform:
-                raise ValueError('[field] is missing using the Title Attribute Function.')
-            value = titlecase_except(properties[field])
-
-        # Adds mph at the end of the integer field.
-        elif 'mph' in conform['function']:
-            if 'field' not in conform:
-                raise ValueError('[field] is missing using the Mph Attribute Function.')
-            value = '{0} mph'.format(properties[field])
-
-    # Remove any white spaces [True/False]
-    if 'strip' in conform:
-        if conform['strip'] in true_list:
-            if not isinstance(value, (string_types, binary_type)):
-                raise ValueError('Can only [strip] Attribute Function to strings or binary types.')
-            value = value.strip()
-
-    # Converts String to Integer [True/False]
-    if 'int' in conform:
-        if conform['int'] in true_list:
-            try:
-                value = int(value)
-            except:
-                logging.warning('Cannot convert [%s] to integer.' % value)
-
-    # Converts String to Integer [True/False]
-    if 'float' in conform:
-        if conform['float'] in true_list:
-            try:
-                value = float(value)
-            except:
-                logging.warning('Cannot convert [%s] to float.' % value)
-
-    # Converts String to Integer [True/False]
-    if 'text' in conform:
-        value = conform['text']
+        if config.get('title'):
+            value = titlecase_except(value)
 
     return value
 
 
-def transform_fields(properties, conform, **kwargs):
+def transform_fields(properties, config, **kwargs):
     fields = OrderedDict()
-    for key in conform.keys():
+    for key in config.keys():
         value = None
 
         # STRING
         # Replace only a single field
-        if isinstance(conform[key], (string_types, binary_type)):
-            if conform[key] in properties:
-                value = properties[conform[key]]
-                value = clean_field(properties, conform[key], **kwargs)
+        if isinstance(config[key], (string_types, binary_type)):
+            if config[key] in properties:
+                value = properties[config[key]]
+                value = clean_field(properties, config[key], **kwargs)
             fields.update(dict([(key, value)]))
 
         # DICT
         # Replace & join multiple fields together
-        elif isinstance(conform[key], (OrderedDict, dict)):
-            value = clean_field(properties, conform[key], **kwargs)
+        elif isinstance(config[key], (OrderedDict, dict)):
+            value = clean_field(properties, config[key], **kwargs)
             fields.update(dict([(key, value)]))
 
         # LIST
         # Join a values from a list
-        elif isinstance(conform[key], (list, tuple)):
-            value = clean_field(properties, conform[key], **kwargs)
+        elif isinstance(config[key], (list, tuple)):
+            value = clean_field(properties, config[key], **kwargs)
             fields.update(dict([(key, value)]))
 
     return fields
 
 
 def transform_columns(feature, config, **kwargs):
-    config = read_config(config)
-    conform = config['conform']
-    feature['properties'] = transform_fields(feature['properties'], conform, **kwargs)
+    config = Models(config).config
+    feature['properties'] = transform_fields(feature['properties'], config, **kwargs)
 
     return feature
 

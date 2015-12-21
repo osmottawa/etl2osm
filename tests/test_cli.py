@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
-from test_variables import config, roads
+from test_variables import roads
 import subprocess
 
 infile = roads['lake_county']
 outfile = 'tmp-file.geojson'
-config = config['lake_county']['roads']
+config = "{'foo': {'text': 'bar'}}"
 
 
 def test_cli_process():
