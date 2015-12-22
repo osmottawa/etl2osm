@@ -39,6 +39,7 @@ config = {
     'lake_county': {
         'roads': os.path.join(root, "tests/config/lake_county.json")
     },
+    'model': os.path.join(root, "tests/config/canvec.yml")
 }
 
 wkt = osr.SRS_WKT_WGS84

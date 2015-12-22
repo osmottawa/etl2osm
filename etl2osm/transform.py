@@ -34,12 +34,11 @@ def regex_strip(value):
         match = re.search(r'^([a-z,A-Z,0-9].+[a-z,A-Z,0-9])', value)
         if match:
             value = match.group()
-    return str(value)
+    return unicode(value)
 
 
 def config_to_properties(config):
     properties = OrderedDict()
-    config = Models(config).config
 
     for key, value in config.items():
         datatype = 'str'
@@ -210,16 +209,10 @@ def clean_field(properties, config, **kwargs):
             raise ValueError('Config must contain at least [field] OR [text].')
 
         if 'model' in config:
-            if 'model' in kwargs:
-                # User inputed Models
-                model = Models(kwargs.get('model'))
-                if len(model) == 1:
-                    model = model.config
-                else:
-                    model = model[config['model']]
+            if config['model'] in models:
+                model = models[config['model']]
             else:
-                # Default Models
-                model = Models()[config['model']]
+                model = Models(config['model'])
             value = model.get(properties.get(config['field']))
 
         # Converts string to a nice Titlecase (3RD AVENUE=3rd Avenue)
@@ -258,7 +251,6 @@ def transform_fields(properties, config, **kwargs):
 
 
 def transform_columns(feature, config, **kwargs):
-    config = Models(config).config
     feature['properties'] = transform_fields(feature['properties'], config, **kwargs)
 
     return feature

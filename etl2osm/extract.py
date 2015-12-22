@@ -4,6 +4,7 @@ import logging
 import os
 import fiona
 import json
+from etl2osm.models import Models
 from etl2osm.transform import (reproject,
                                transform_columns,
                                extract_epsg,
@@ -188,6 +189,7 @@ class Extract(Load):
         crs_source = get_coordinate_rerefence_system(extract_epsg(self.crs))
 
         if config:
+            config = Models(config).config
             self.properties = config_to_properties(config)
 
         for x, feature in enumerate(self.features):

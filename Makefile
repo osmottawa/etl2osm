@@ -7,7 +7,7 @@ init:
 	pip install -r requirements.txt
 
 test:
-	py.test test_etl2osm.py --verbose
+	sudo py.test tests --doctest-modules --pep8 etl2osm -v --cov etl2osm --cov-report term-missing
 
 clean:
 	python setup.py clean --all

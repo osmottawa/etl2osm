@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-from test_variables import roads
 import etl2osm
+from test_variables import roads
 
 
 def test_speed_extract_geojson(infile=roads['geojson']):

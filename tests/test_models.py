@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-
 from etl2osm import Models
+from test_variables import config
 
 
 def test_models_len():
@@ -49,5 +49,8 @@ def test_models_inherent():
     assert Models('{"foo": "bar"}').config
 
 
+def test_models_path():
+    assert Models(config['model'])
+
 if __name__ == '__main__':
-    test_models_inherent()
+    test_models_path()
