@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import etl2osm
-from test_variables import config, roads
+from test_variables import roads
 
 
 def test_entry_points():
@@ -14,7 +14,13 @@ def test_entry_points():
 
 def test_api_process():
     outfile = 'tmp-filepath.geojson'
-    data = etl2osm.process(roads['lake_county'], config={'foo': {'text': 'bar'}}, outfile)
+    data = etl2osm.process(roads['geojson'], outfile, config={'foo': {'text': 'bar'}})
+    assert data.geojson
+    assert data.epsg
+    assert os.path.exists(outfile)
+    os.remove(outfile)
+
+    data = etl2osm.process(roads['geojson'], outfile)
     assert data.geojson
     assert data.epsg
     assert os.path.exists(outfile)

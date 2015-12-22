@@ -11,7 +11,7 @@ import etl2osm
 @click.option('--suffix', help='Filepath for suffix attribute function.')
 @click.option('--direction', help='Filepath for direction attribute function.')
 @click.option('--title_except', help='Filepath for title except attribute function.')
-def cli(infile, config, outfile, **kwargs):
+def cli(infile, outfile, config, **kwargs):
     """Command Line Interface for ETL2OSM"""
 
-    etl2osm.process(infile, config, outfile, **kwargs)
+    etl2osm.process(infile, outfile, config=config, **kwargs)

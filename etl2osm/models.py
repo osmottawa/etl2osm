@@ -1,37 +1,22 @@
 # -*- coding: utf-8 -*-
 import os
-import etl2osm
 import yaml
 import json
 import logging
-from collections import OrderedDict
-
-
-def ordered_load(stream, loader=yaml.Loader, object_pairs_hook=OrderedDict):
-    class OrderedLoader(loader):
-        pass
-
-    def construct_mapping(loader, node):
-        loader.flatten_mapping(node)
-        return object_pairs_hook(loader.construct_pairs(node))
-
-    OrderedLoader.add_constructor(
-        yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-        construct_mapping)
-    return yaml.load(stream, OrderedLoader)
 
 
 class Models(object):
     """Models"""
 
     def __init__(self, path='', file_type='.yml'):
+        self.path = path
+        self.file_type = file_type
         self.container = {}
-        self.__load(path, file_type)
+        self.load(self.path, self.file_type)
         if len(self) == 0:
             logging.error('No Models Found - Verify <FILE PATH: {}> or <FILE TYPE: .yml .json>.'.format(path))
 
-    def __load(self, path='', file_type='.yml'):
-        print 'WARNING - Models {}'.format(path)
+    def load(self, path='', file_type='.yml'):
         # Try converting String to JSON dict
         # "{'foo': {'text': 'bar'}}"
         try:
@@ -43,10 +28,11 @@ class Models(object):
             self.container = path.container
 
         elif isinstance(path, dict):
-            self.container['config'] = OrderedDict(path)
+            self.container['config'] = path
         else:
             # Look inside etl2osm [models] folder for .json files
             if not path:
+                import etl2osm
                 root = os.path.dirname(etl2osm.__file__)[:-len('etl2osm')]
                 path = os.path.join(root, 'models')
 
@@ -54,7 +40,7 @@ class Models(object):
             if os.path.isfile(path):
                 with open(path) as f:
                     file_name = os.path.split(path)[-1]
-                    self.container[os.path.splitext(file_name)[0]] = ordered_load(f, yaml.SafeLoader)
+                    self.container[os.path.splitext(file_name)[0]] = yaml.load(f)
 
             # Read Entire Directory (Crawler)
             else:
@@ -62,7 +48,7 @@ class Models(object):
                     for file_name in files:
                         if file_type in file_name:
                             with open(os.path.join(root, file_name)) as f:
-                                self.container[os.path.splitext(file_name)[0]] = ordered_load(f, yaml.SafeLoader)
+                                self.container[os.path.splitext(file_name)[0]] = yaml.load(f)
 
     def __getitem__(self, key):
         return self.container.get(key)
@@ -113,5 +99,5 @@ class Models(object):
 if __name__ == "__main__":
     # models = Models(OrderedDict([('hello', 'world'), ('foo', 'bar')]))
     # models = Models({'foo': 'bar'})
-    models = Models('{"foo": "bar"}')
+    models = Models('../models/canvec/')
     print models.config

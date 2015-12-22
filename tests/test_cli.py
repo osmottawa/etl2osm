@@ -3,9 +3,9 @@ import os
 from test_variables import roads
 import subprocess
 
-infile = roads['lake_county']
+infile = roads['geojson']
 outfile = 'tmp-file.geojson'
-config = "{'foo': {'text': 'bar'}}"
+config = '{"foo": {"text": "bar"}}'
 
 
 def test_cli_process():

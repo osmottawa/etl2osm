@@ -4,7 +4,6 @@ import logging
 import os
 import fiona
 import json
-from etl2osm.models import Models
 from etl2osm.transform import (reproject,
                                transform_columns,
                                extract_epsg,
@@ -91,10 +90,14 @@ class Extract(Load):
 
                 # Read EPSG
                 crs = source.meta['crs']
+
                 if 'init' in crs:
                     self.epsg = crs['init'].upper()
                 elif 'crs_wkt' in source.meta:
                     self.wkt = source.meta['crs_wkt']
+                else:
+                    logging.warning('Coordinate Reference System was not detected (default=EPSG:4326)')
+                    self.epsg = 'EPSG:4326'
 
                 for feature in source:
                     if feature:
@@ -170,10 +173,8 @@ class Extract(Load):
         logging.info('Reading OSM: %s' % infile)
         raise ValueError('Reading OSM not implemented')
 
-    def transform(self, config={}, **kwargs):
+    def transform(self, config='', **kwargs):
         """ Transform the data using the config file """
-
-        self.config = Models(config).config
 
         if 'crs_target' in kwargs:
             crs_target = kwargs.pop('crs_target', 'EPSG:4326')
@@ -187,7 +188,7 @@ class Extract(Load):
         crs_source = get_coordinate_rerefence_system(extract_epsg(self.crs))
 
         if config:
-            self.properties = config_to_properties(self.config)
+            self.properties = config_to_properties(config)
 
         for x, feature in enumerate(self.features):
             # Detect if correct geometry (Multipoints > Point)
@@ -198,8 +199,8 @@ class Extract(Load):
                 reproject(feature, crs_source, crs_target)
 
             # Transform Columns
-            if self.config:
-                feature = transform_columns(feature, self.config, **kwargs)
+            if config:
+                feature = transform_columns(feature, config, **kwargs)
 
             # Save feature to self
             self[x] = feature

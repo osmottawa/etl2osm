@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from etl2osm.extract import Extract
 
 
-def process(infile, config, outfile, **kwargs):
+def process(infile, outfile, config='', **kwargs):
     """ All in one process for doing ETL2OSM
 
     :argument ``infile``: Input file path to read.
@@ -13,8 +13,7 @@ def process(infile, config, outfile, **kwargs):
     """
 
     data = Extract(infile, **kwargs)
-    if config:
-        data.transform(config, **kwargs)
+    data.transform(config, **kwargs)
     data.save(outfile, **kwargs)
     return data
 

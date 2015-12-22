@@ -131,4 +131,4 @@ def test_extract_shapefile_utm():
 
 
 if __name__ == '__main__':
-    test_extract_shapefile()
+    test_extract_shapefile_utm()

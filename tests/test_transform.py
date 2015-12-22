@@ -172,7 +172,7 @@ def test_transform_clean_text():
 
 
 def test_transform_geojson():
-    data = etl2osm.extract(roads['lake_county'])
+    data = etl2osm.extract(roads['geojson'])
     data.transform()
     assert data.epsg == 'EPSG:4326'
 
@@ -195,4 +195,4 @@ if __name__ == '__main__':
     # test_transform_int()
     # test_transform_float()
     # test_transform_geojson_config()
-    test_transform_clean_suffix()
+    test_transform_geojson()
