@@ -11,6 +11,7 @@ import etl2osm
 @click.option('--suffix', help='Filepath for suffix attribute function.')
 @click.option('--direction', help='Filepath for direction attribute function.')
 @click.option('--title_except', help='Filepath for title except attribute function.')
+@click.option('--reproject', is_flag=False, help='Reproject the data into a different projection (WGS84).')
 def cli(infile, outfile, config, **kwargs):
     """Command Line Interface for ETL2OSM"""
 

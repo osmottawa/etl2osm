@@ -195,7 +195,7 @@ class Extract(Load):
             feature = confirm_geometry(feature)
 
             # Reproject data to target projection (crs_target=4326)
-            if kwargs.get('reproject', True):
+            if kwargs.get('reproject', False):
                 reproject(feature, crs_source, crs_target)
 
             # Transform Columns
