@@ -24,9 +24,9 @@ for root, dirs, files in os.walk(path):
                         config = {
                             'name': "rtename1en",
                             "name:fr": "rtename1fr",
-                            "speed": "speedrestr",
+                            "speed": {"field": "speedrestr", "model": "canvecRoadSegementSpeedrestr"},
                             "highway": {"field": "roadclass", "model": "canvecRoadSegementRoadclass"},
-                            "surface_type": {"field": "pavsurf", "model": "canvecRoadSegementPavsurf"},
+                            "canvec:roadclass": "roadclass",
                             "surface": {"field": "pavstatus", "model": "canvecRoadSegementPavstatus"}
                         }
                         print 'Processing:', outfile

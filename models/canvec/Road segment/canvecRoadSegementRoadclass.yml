@@ -1,13 +1,83 @@
-1: Freeway
-2: Expressway/Highway
-3: Arterial
-4: Collector
-5: Local/Street
-6: Local/Strata
-7: Local/Unknown
-8: Alleyway/Lane
-9: Ramp
-0: Resource/Recreation
-1: Rapid transit
-2: Service lane
-3: Winter
+# Canvec+ Documentation
+# http://ftp2.cits.rncan.gc.ca/pub/canvec+/doc/CanVec+_feature_catalogue.pdf
+
+# 1:Freeway
+# =========
+# An unimpeded, high speed controlled access thoroughfare for
+# through traffic with typically no at grade intersections, usually with
+# no property access or direct access and which is accessed by a
+# ramp. Pedestrians prohibited.
+1: motorway
+
+# 2:Expressway/Highway
+# ====================
+# A high-speed thoroughfare with a combination of controlled access
+# intersections at any grade.
+2: motorway
+
+# 3:Arterial
+# ==========
+# A major thoroughfare with medium to large traffic capacity.
+3: primary
+
+# 4:Collector
+# ===========
+# A minor thoroughfare mainly used to access properties and to feed
+# traffic with right of way.
+4: primary
+
+# 5:Local/Street
+# ==============
+# A low-speed thoroughfare dedicated to provide full access to the
+# front of properties.
+5: residential
+
+# 6:Local/Strata
+# ==============
+# A low-speed thoroughfare dedicated to provide access to properties
+# with potential public restriction, trailer parks, First Nations, strata,
+# private estates.
+6: residential
+
+# 7:Local/Unknown
+# ===============
+# A low-speed thoroughfare dedicated to provide access to the front
+# of properties but for which the access regulations are unknown.
+7: tertiary
+
+# 8:Alleyway/Lane
+# ===============
+# A low-speed thoroughfare dedicated to provide access to the rear
+# of properties.
+8: service
+
+# 9:Ramp
+# ======
+# A system of interconnecting roadways providing for the controlled
+# movement between two or more roadways.
+9: motorway_link
+
+# 10:Resource/Recreation
+# ======================
+# A narrow passage whose primary function is to provide access for
+# resource extraction and may also have serve in providing public
+# access to the backcountry.
+10: service
+
+# 11:Rapid transit
+# ================
+# A thoroughfare restricted to public transit buses.
+11: service
+
+# 12:Service lane
+# ===============
+# A stretch of road permitting vehicles to come to a stop along a
+# freeway or highway. Scale, service lane, emergency lane, lookout
+# and rest area.
+12: service
+
+# 13:Winter
+# =========
+# A road that is only useable during the winter when conditions allow
+# for passage over lakes, rivers and wetlands.
+13: track
