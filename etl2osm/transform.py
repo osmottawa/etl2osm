@@ -194,7 +194,9 @@ def clean_field(properties, config, **kwargs):
         if config not in properties:
             logging.warning('Cannot find attribute [%s] using the Attribute Function.' % config)
         value = properties.get(config)
-
+    elif isinstance(config, list):
+        message = 'Cannot clean a list'
+        raise ValueError(message)
     else:
         # REQUIRED: Define value using [field]
         if 'field' in config:
@@ -206,7 +208,8 @@ def clean_field(properties, config, **kwargs):
         elif 'text' in config:
             value = config['text']
         else:
-            raise ValueError('Config must contain at least [field] OR [text].')
+            message = 'Config must contain at least [field] OR [text].'
+            raise ValueError(message)
 
         if 'model' in config:
             if config['model'] in models:
@@ -244,8 +247,12 @@ def transform_fields(properties, config, **kwargs):
         # LIST
         # Join a values from a list
         elif isinstance(config[key], (list, tuple)):
-            value = clean_field(properties, config[key], **kwargs)
-            fields.update(dict([(key, value)]))
+            items = []
+            for item in config[key]:
+                value = clean_field(properties, item, **kwargs)
+                if value:
+                    items.append(value)
+            fields.update(dict([(key, " ".join(items))]))
 
     return fields
 

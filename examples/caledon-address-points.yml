@@ -1,0 +1,18 @@
+'addr:street':
+    - model: suffix
+      field: STREETTYPE
+    - title: True
+      field: STREETNAME
+    - model: direction
+      field: STREETDIRE
+'addr:housenumber':
+    int: True
+    field: STREETNUM
+'addr:unit':
+    UNIT_IDENT
+ref:
+    ROPADRID
+'source:ref':
+    text: 'Region of Peel'
+source:
+    text: 'Region of Peel'
