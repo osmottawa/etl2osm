@@ -228,7 +228,7 @@ def clean_field(properties, config, **kwargs):
                 value = config['text']
             else:
                 value = None
-                
+
         # Converts string to a nice Titlecase (3RD AVENUE=3rd Avenue)
         if config.get('title'):
             value = titlecase_except(value)

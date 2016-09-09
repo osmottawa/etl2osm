@@ -4,7 +4,7 @@ from __future__ import absolute_import
 __title__ = 'etl2osm'
 __author__ = 'OSM Canada Team'
 __author_email__ = 'carriere.denis@gmail.com'
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 __license__ = 'MIT'
 __copyright__ = 'Copyright (c) 2015 OSM Canada Team'
 
