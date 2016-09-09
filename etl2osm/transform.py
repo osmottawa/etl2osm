@@ -218,6 +218,17 @@ def clean_field(properties, config, **kwargs):
                 model = Models(config['model'])
             value = model.get(properties.get(config['field']))
 
+        if 'int' in config:
+            try:
+                value = int(value)
+            except:
+                value = None
+        if 'if' in config and 'text' in config:
+            if properties.get(config['if']):
+                value = config['text']
+            else:
+                value = None
+                
         # Converts string to a nice Titlecase (3RD AVENUE=3rd Avenue)
         if config.get('title'):
             value = titlecase_except(value)
@@ -252,7 +263,8 @@ def transform_fields(properties, config, **kwargs):
                 value = clean_field(properties, item, **kwargs)
                 if value:
                     items.append(value)
-            fields.update(dict([(key, " ".join(items))]))
+            if items:
+                fields.update(dict([(key, " ".join(items))]))
 
     return fields
 
