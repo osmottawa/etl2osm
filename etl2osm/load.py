@@ -50,7 +50,7 @@ class Load(object):
         logging.info('Writing GeoJSON: %s' % outfile)
 
         with open(outfile, 'wb') as f:
-            f.write(json.dumps(self.geojson))
+            f.write(json.dumps(self.geojson, indent=4))
 
     def write_osm(self, outfile):
         """ Writes data to OSM format """

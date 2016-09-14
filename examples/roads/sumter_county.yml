@@ -1,0 +1,13 @@
+name:
+    - model: direction
+      field: DIRECTION
+    - title: true
+      field: ST_NAME
+    - model: suffix
+      field: ST_EXT
+maxspeed:
+    field: Speed_Limi
+source:
+    text: "Sumter County"
+highway:
+    text: residential

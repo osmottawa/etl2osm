@@ -177,14 +177,14 @@ def titlecase_except(value, **kwargs):
     if isinstance(value, (string_types, binary_type)):
         word_list = re.split(' ', value)
         final = []
+        if word_list:
+            for word in word_list:
+                if word in models['title_except']:
+                    final.append(word)
+                else:
+                    final.append(word.capitalize())
 
-        for word in word_list:
-            if word in models['title_except']:
-                final.append(word)
-            else:
-                final.append(word.capitalize())
-
-        return ' '.join(final)
+            return ' '.join(final)
     return value
 
 

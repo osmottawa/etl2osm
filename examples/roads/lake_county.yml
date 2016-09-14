@@ -1,0 +1,17 @@
+name:
+    - model: direction
+      field: PrefixDire
+    - field: PrefixType
+    - title: true
+      field: BaseStreet
+    - model: suffix
+      field: SuffixType
+lanes: 
+    - int: true
+      field: NumberOfLa
+oneway: 
+    field: Oneway
+source: 
+    text: 'Lake County'
+highway:
+    text: 'residential'
